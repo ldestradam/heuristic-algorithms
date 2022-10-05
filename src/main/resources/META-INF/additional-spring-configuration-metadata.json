@@ -1,0 +1,47 @@
+{"properties": [
+  {
+    "name": "input-file.edges",
+    "type": "java.lang.String",
+    "description": "A description for 'input-file.edges'"
+  },
+  {
+    "name": "input-file.nodes",
+    "type": "java.lang.String",
+    "description": "A description for 'input-file.nodes'"
+  },
+  {
+    "name": "params.num-fleet",
+    "type": "java.lang.String",
+    "description": "A description for 'params.num-fleet'"
+  },
+  {
+    "name": "params.fleet-capacity",
+    "type": "java.lang.String",
+    "description": "A description for 'params.fleet-capacity'"
+  },
+  {
+    "name": "params.population-size",
+    "type": "java.lang.String",
+    "description": "A description for 'params.population-size'"
+  },
+  {
+    "name": "params.genetic.elitism-count",
+    "type": "java.lang.String",
+    "description": "A description for 'params.genetic.elitism-count'"
+  },
+  {
+    "name": "params.genetic.mutation-rate",
+    "type": "java.lang.String",
+    "description": "A description for 'params.genetic.mutation-rate'"
+  },
+  {
+    "name": "params.genetic.crossover-rate",
+    "type": "java.lang.String",
+    "description": "A description for 'params.genetic.crossover-rate'"
+  },
+  {
+    "name": "params.num-generations",
+    "type": "java.lang.String",
+    "description": "A description for 'params.num-generations'"
+  }
+]}
