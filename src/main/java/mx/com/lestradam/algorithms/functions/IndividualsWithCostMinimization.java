@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,46 +31,54 @@ import mx.com.lestradam.algorithms.elements.Individual;
 @Component("IndividualsWithCostMinimization")
 public class IndividualsWithCostMinimization implements IndividualCreation {
 	
-	private Logger logger = LoggerFactory.getLogger(IndividualsWithCostMinimization.class);
+	private static Logger logger = LoggerFactory.getLogger(IndividualsWithCostMinimization.class);
+	
 	private Random rand = new Random();
-	private List<Node> nodes;
-	private List<Edge> edges;
-	private Node depot;
 	
 	@Autowired
 	private DataSet dataset;
 	
 	@Autowired
-	private GeneticParameters parameters;	
-	
-	@PostConstruct
-	private void init() {
-		nodes = dataset.getNodes();
-		edges = dataset.getEdges();
-		depot = dataset.getDepot();
-	}
+	private GeneticParameters parameters;
 	
 	@Override
 	public Individual createIndividual() {
 		long[] solution = {};
+		List<Node> nodes = dataset.getNodes();
+		List<Edge> edges = dataset.getEdges();
+		Node depot = dataset.getDepot();
+		int numFleet = parameters.getNumFleet();
 		List<long[]> routes = new ArrayList<>();
-		long[] costs = new long[routes.size()];
-		long[] customersId = nodes.stream().mapToLong(Node::getId).toArray();
-		for(int i = 0; i < parameters.getNumFleet(); i++)
+		long[] costs = new long[numFleet];
+		long[] customersId = nodes.stream().filter(node -> node.getId() != depot.getId()).mapToLong(Node::getId).toArray();
+		for(int i = 0; i < numFleet; i++)
 			routes.add( new long[]{depot.getId()});
 		while (customersId.length > 0) {
-			int customerInd = getRandomCustomerIndex(customersId, routes);
+			int customerInd = getRandomCustomerIndex(customersId, routes);			
+			if(logger.isTraceEnabled()) {
+				logger.trace("Selected customer: {}", customersId[customerInd]);
+			}
 			for(int i = 0; i < routes.size(); i++) {
 				long[] expectedRoute = ArrayUtils.add(routes.get(i), customersId[customerInd]);
 				costs[i] = BasicFitnessOperations.getDistanceRoute(expectedRoute, edges);
+				if(logger.isTraceEnabled()) {
+					logger.trace("Expected Cost[{}]: {}", i, costs[i]);
+					logger.trace("Expected route[{}]: {}", i, Arrays.toString(expectedRoute));					
+				}
 			}
 			int routeInd = BasicOperations.getMinimunCostIndex(costs);
 			long[] updatedRoute = ArrayUtils.add(routes.get(routeInd), customersId[customerInd]);
+			if(logger.isTraceEnabled()) {
+				logger.trace("Min. route index: {}", routeInd);
+				logger.trace("Selected route: {}", Arrays.toString(updatedRoute));					
+			}
 			routes.set(routeInd, updatedRoute);
-			ArrayUtils.remove(customersId, customerInd);
+			customersId = ArrayUtils.remove(customersId, customerInd);
 		}
 		for(long[] routeAux : routes)
 			solution = ArrayUtils.addAll(solution, routeAux);
+		if(logger.isDebugEnabled())
+			logger.debug("Chromosome generated: {}", Arrays.toString(solution));
 		return new Individual(solution);
 	}
 	
@@ -88,10 +94,6 @@ public class IndividualsWithCostMinimization implements IndividualCreation {
 			customerIndex = rand.nextInt(customersLength);
 			customerId = customersId[customerIndex];
 			isOnRoute = !customersRouted.contains(customerId);
-			if(logger.isDebugEnabled()) {
-				logger.debug("Random customer id: {}", customerId);
-				logger.debug("Customers Routed: {}", Arrays.toString(customersRouted.stream().mapToLong(customer -> customer).toArray()));
-			}
 		} while (!isOnRoute);
 		return customerIndex;
 	}

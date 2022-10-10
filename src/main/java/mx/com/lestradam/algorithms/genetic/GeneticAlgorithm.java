@@ -2,6 +2,8 @@ package mx.com.lestradam.algorithms.genetic;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ import mx.com.lestradam.algorithms.functions.NeighborhoodOperators;
 
 @Component
 public class GeneticAlgorithm {
+	
+	private static Logger logger = LoggerFactory.getLogger(GeneticAlgorithm.class);
 	
 	@Autowired
 	@Qualifier("IndividualsWithCostMinimization")
@@ -37,11 +41,15 @@ public class GeneticAlgorithm {
 	private Population initPopulation() {
 		int populationSize = parameters.getPopulationSize();
 		Population population = new Population(populationSize);
+		long populationFitness = 0;
 		for(int i = 0; i < populationSize; i++) {
 			Individual individual = this.indCreation.createIndividual();
-			individual.setFitness(fitness.evaluate(individual.getChromosome()));
+			long indFitness = fitness.evaluate(individual.getChromosome());
+			populationFitness += indFitness;
+			individual.setFitness(indFitness);
 			population.setIndividual(i, individual);
 		}
+		population.setPopulationFitness(populationFitness);
 		return population;
 	}
 	
@@ -58,13 +66,23 @@ public class GeneticAlgorithm {
 		return individuals[individuals.length - 1];
 	}
 	
+	private long getFitnessPopulation(Individual[] individuals) {
+		long totalFitness = 0;
+		for(Individual individual: individuals)
+			totalFitness += fitness.evaluate(individual.getChromosome());
+		return totalFitness;
+	}
+	
 	public Population execute() {
 		int generation = 1;
 		// Initialize population
 		Population population = this.initPopulation();
 		while(generation < parameters.getNumGenerations()) {
+			// Print current generation
+			if (logger.isDebugEnabled()) 
+				printCurrentGeneration(population, generation);
 			// Apply crossover
-			//Create temporary population
+			// Create temporary population
 			Population tempPopulation = new Population(parameters.getPopulationSize());
 			//Loop over current population
 			for(int i = 0; i < parameters.getPopulationSize(); i = i +2) {
@@ -95,12 +113,22 @@ public class GeneticAlgorithm {
 					tempPopulation.setIndividual(i + 1, parent2);
 				}
 			}
+			// Set fitness population
+			long populationFitness = getFitnessPopulation(tempPopulation.getIndividuals());
+			tempPopulation.setPopulationFitness(populationFitness);
 			// Increase generation counter
 			generation++;
 			// Set temporary population as new population
 			population = tempPopulation;
 		}
 		return population;
+	}
+	
+	private void printCurrentGeneration(Population population, int generation) {
+		logger.debug("CURRENT GENERATION: {}", generation);
+		logger.debug("GENERATION FITNESS: {}", population.getPopulationFitness());
+		for(Individual individual : population.getIndividuals())
+			logger.info("{}", individual);
 	}
 	
 }

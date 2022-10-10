@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import mx.com.lestradam.algorithms.data.GeneticParameters;
 import mx.com.lestradam.algorithms.elements.Individual;
 import mx.com.lestradam.algorithms.elements.Population;
 import mx.com.lestradam.algorithms.genetic.GeneticAlgorithm;
@@ -18,6 +19,9 @@ public class HeuristicAlgorithmsApplication implements CommandLineRunner{
 	
 	@Autowired
 	private GeneticAlgorithm genetic;
+	
+	@Autowired
+	private GeneticParameters parameters;
 
 	public static void main(String[] args) {
 		logger.info("STARTING THE APPLICATION");
@@ -27,16 +31,27 @@ public class HeuristicAlgorithmsApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {		
-		 Population population = genetic.execute();
-		 printPopulation(population);
+		printParameters();
+		Population population = genetic.execute();
+		printPopulation(population);
+	}
+	
+	private void printParameters() {
+		logger.info("PARAMETERS CONFIGURATION");
+		logger.info("POPULATION SIZE: {}", parameters.getPopulationSize());
+		logger.info("NUM. OF GENERATION: {}", parameters.getNumGenerations());
+		logger.info("FLEET CAPACITY: {}", parameters.getFleetCapacity());
+		logger.info("NUM. OF FLEETS: {}", parameters.getNumFleet());
+		logger.info("CROSSOVER RATE: {}", parameters.getCrossoverRate());		
+		logger.info("MUTATION RATE: {}", parameters.getMutationRate());
 	}
 	
 	private void printPopulation(Population population) {
-		logger.info("RESULTS");
+		logger.info("FINAL RESULTS");
+		logger.info("POPULATION FITNESS: {}", population.getPopulationFitness());
 		for(Individual individual : population.getIndividuals()) {
-			logger.info("Individual : {}", individual);
+			logger.info("{}", individual);
 		}
-		logger.info("RESULTS");
 	}
 
 }

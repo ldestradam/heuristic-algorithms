@@ -13,6 +13,8 @@ public class BasicFitnessOperations {
 	}
 	
 	public static long getEdgeWeight(long source, long target, List<Edge> edges) {
+		if (source == target)
+			return 0;
 		Optional<Edge> edgeA = edges.stream()
 				.filter(currentegde -> (int) currentegde.getSource() == source && (int)currentegde.getTarget() == target)
 				.findFirst();
