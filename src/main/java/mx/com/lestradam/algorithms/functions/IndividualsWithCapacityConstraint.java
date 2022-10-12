@@ -14,8 +14,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.GeneticParameters;
 import mx.com.lestradam.algorithms.data.Node;
 import mx.com.lestradam.algorithms.elements.Individual;
 
@@ -43,7 +43,7 @@ public class IndividualsWithCapacityConstraint implements IndividualCreation {
 	private DataSet dataset;
 	
 	@Autowired
-	private GeneticParameters parameters;
+	private AlgorithmsParameters parameters;
 	
 	@PostConstruct
 	public void init() {
@@ -78,7 +78,7 @@ public class IndividualsWithCapacityConstraint implements IndividualCreation {
 		List<Long> route = new ArrayList<>();
 		List<Long> customersRouted = new ArrayList<>();
 		List<Long> customersNotRouted = new ArrayList<>();
-		List<Long> customersId = new ArrayList<>(customers.stream().filter(customer ->customer.getId() != depotId).map(customer -> customer.getId()).collect(Collectors.toList()));
+		List<Long> customersId = new ArrayList<>(customers.stream().filter(customer ->customer.getId() != depotId).map(Node::getId).collect(Collectors.toList()));
 		int noOfCustomers = customersId.size();
 		while (customersRouted.size() < noOfCustomers) {
 			if(totalCapacity == parameters.getFleetCapacity() || customersId.isEmpty()) {

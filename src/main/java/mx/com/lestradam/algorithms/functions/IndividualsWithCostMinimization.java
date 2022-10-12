@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.data.DataSet;
 import mx.com.lestradam.algorithms.data.Edge;
-import mx.com.lestradam.algorithms.data.GeneticParameters;
 import mx.com.lestradam.algorithms.data.Node;
 import mx.com.lestradam.algorithms.elements.Individual;
 
@@ -39,7 +39,7 @@ public class IndividualsWithCostMinimization implements IndividualCreation {
 	private DataSet dataset;
 	
 	@Autowired
-	private GeneticParameters parameters;
+	private AlgorithmsParameters parameters;
 	
 	@Override
 	public Individual createIndividual() {

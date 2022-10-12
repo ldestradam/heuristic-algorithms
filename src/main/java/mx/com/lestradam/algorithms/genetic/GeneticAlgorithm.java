@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.data.GeneticParameters;
 import mx.com.lestradam.algorithms.elements.Individual;
 import mx.com.lestradam.algorithms.elements.Population;
@@ -36,7 +37,10 @@ public class GeneticAlgorithm {
 	private NeighborhoodOperators neighborhood;
 	
 	@Autowired
-	private GeneticParameters parameters;
+	private GeneticParameters geneticParams;
+	
+	@Autowired
+	private AlgorithmsParameters parameters;
 	
 	private Population initPopulation() {
 		int populationSize = parameters.getPopulationSize();
@@ -90,13 +94,13 @@ public class GeneticAlgorithm {
 				Individual parent1 = this.selectParent(population.getIndividuals(), population.getPopulationFitness());
 				Individual parent2 = this.selectParent(population.getIndividuals(), population.getPopulationFitness());
 				//Apply crossover
-				if(parameters.getCrossoverRate() > Math.random()) {
+				if(geneticParams.getCrossoverRate() > Math.random()) {
 					//Initialize offspring
 					List<long[]> offsprings = crossover.orderCrossover(parent1.getChromosome(), parent2.getChromosome());
 					long[] chromosome1 = offsprings.get(0);
 					long[] chromosome2 = offsprings.get(1);
 					// Apply mutation
-					if(parameters.getMutationRate() > Math.random()) {
+					if(geneticParams.getMutationRate() > Math.random()) {
 						chromosome1 = neighborhood.randomSwaps(chromosome1);
 						chromosome2 = neighborhood.randomSwaps(chromosome2);
 					}

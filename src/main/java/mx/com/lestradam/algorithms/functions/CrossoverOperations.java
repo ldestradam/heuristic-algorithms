@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.GeneticParameters;
 import mx.com.lestradam.algorithms.data.Node;
 import mx.com.lestradam.algorithms.exceptions.DataException;
 
@@ -24,7 +24,7 @@ public class CrossoverOperations {
 	private DataSet dataset;
 	
 	@Autowired
-	private GeneticParameters parameters;
+	private AlgorithmsParameters parameters;
 	
 	private long[] orderCrossoverOperation(long[] parent1, long[] parent2, int crossoverPoint1, int crossoverPoint2) {
 		Node depot = dataset.getDepot();

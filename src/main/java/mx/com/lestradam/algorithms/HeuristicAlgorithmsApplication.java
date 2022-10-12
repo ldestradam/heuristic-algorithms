@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.data.GeneticParameters;
 import mx.com.lestradam.algorithms.elements.Individual;
 import mx.com.lestradam.algorithms.elements.Population;
@@ -21,7 +22,10 @@ public class HeuristicAlgorithmsApplication implements CommandLineRunner{
 	private GeneticAlgorithm genetic;
 	
 	@Autowired
-	private GeneticParameters parameters;
+	private GeneticParameters geneticParams;
+	
+	@Autowired
+	private AlgorithmsParameters parameters;
 
 	public static void main(String[] args) {
 		logger.info("STARTING THE APPLICATION");
@@ -42,8 +46,8 @@ public class HeuristicAlgorithmsApplication implements CommandLineRunner{
 		logger.info("NUM. OF GENERATION: {}", parameters.getNumGenerations());
 		logger.info("FLEET CAPACITY: {}", parameters.getFleetCapacity());
 		logger.info("NUM. OF FLEETS: {}", parameters.getNumFleet());
-		logger.info("CROSSOVER RATE: {}", parameters.getCrossoverRate());		
-		logger.info("MUTATION RATE: {}", parameters.getMutationRate());
+		logger.info("CROSSOVER RATE: {}", geneticParams.getCrossoverRate());		
+		logger.info("MUTATION RATE: {}", geneticParams.getMutationRate());
 	}
 	
 	private void printPopulation(Population population) {
