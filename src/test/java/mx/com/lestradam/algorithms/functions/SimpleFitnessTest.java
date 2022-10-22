@@ -17,6 +17,8 @@ import mx.com.lestradam.algorithms.constants.TestConstants;
 import mx.com.lestradam.algorithms.data.DataSet;
 import mx.com.lestradam.algorithms.data.Edge;
 import mx.com.lestradam.algorithms.data.Node;
+import mx.com.lestradam.algorithms.functions.fitness.BasicFitnessOperations;
+import mx.com.lestradam.algorithms.functions.fitness.SimpleFitness;
 
 @ExtendWith(MockitoExtension.class)
 class SimpleFitnessTest {

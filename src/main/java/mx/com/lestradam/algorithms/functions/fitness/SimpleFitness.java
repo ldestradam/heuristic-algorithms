@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions;
+package mx.com.lestradam.algorithms.functions.fitness;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import mx.com.lestradam.algorithms.data.DataSet;
 import mx.com.lestradam.algorithms.data.Edge;
 import mx.com.lestradam.algorithms.data.Node;
+import mx.com.lestradam.algorithms.functions.generation.BasicOperations;
 
 @Component("SimpleFitness")
 public class SimpleFitness implements IndividualFitness {

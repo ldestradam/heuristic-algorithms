@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions;
+package mx.com.lestradam.algorithms.operators;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,11 +14,12 @@ import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.data.DataSet;
 import mx.com.lestradam.algorithms.data.Node;
 import mx.com.lestradam.algorithms.exceptions.DataException;
+import mx.com.lestradam.algorithms.functions.generation.BasicOperations;
 
 @Component
-public class CrossoverOperations {
+public class CrossoverOperators {
 	
-	private static Logger logger = LoggerFactory.getLogger(CrossoverOperations.class);
+	private static Logger logger = LoggerFactory.getLogger(CrossoverOperators.class);
 	
 	@Autowired
 	private DataSet dataset;

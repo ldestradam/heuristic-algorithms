@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions;
+package mx.com.lestradam.algorithms.functions.generation;
 
 import mx.com.lestradam.algorithms.elements.Individual;
 

@@ -5,8 +5,13 @@ import java.util.Arrays;
 public class Individual{
 	
 	private long[] chromosome;
-	private double fitness = -1;
+	private long fitness = -1;
 	
+	public Individual(long[] chromosome, long fitness) {
+		this.chromosome = chromosome;
+		this.fitness = fitness;
+	}
+
 	public Individual(long[] chromosome) {
 		this.chromosome = chromosome;
 	}
@@ -19,11 +24,11 @@ public class Individual{
 		this.chromosome = chromosome;
 	}
 
-	public double getFitness() {
+	public long getFitness() {
 		return fitness;
 	}
 
-	public void setFitness(double fitness) {
+	public void setFitness(long fitness) {
 		this.fitness = fitness;
 	}
 	

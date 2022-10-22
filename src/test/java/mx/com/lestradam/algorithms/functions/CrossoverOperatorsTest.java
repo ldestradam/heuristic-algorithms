@@ -13,21 +13,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.GeneticParameters;
 import mx.com.lestradam.algorithms.data.Node;
+import mx.com.lestradam.algorithms.operators.CrossoverOperators;
 
 @ExtendWith(MockitoExtension.class)
-class CrossoverOperationsTest {
+class CrossoverOperatorsTest {
 	
 	@Mock
-	private GeneticParameters parameters;
+	private AlgorithmsParameters parameters;
 	
 	@Mock
 	private DataSet dataset;
 	
 	@InjectMocks
-	private CrossoverOperations crossover;
+	private CrossoverOperators crossover;
 	
 	@BeforeEach
 	void setUp() {		

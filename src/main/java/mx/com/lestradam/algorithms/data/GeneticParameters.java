@@ -2,6 +2,8 @@ package mx.com.lestradam.algorithms.data;
 
 public class GeneticParameters {
 	
+	private int numGenerations;
+	private int populationSize;
 	private double mutationRate;
 	private double crossoverRate;
 	private int elitismCount;
@@ -28,6 +30,22 @@ public class GeneticParameters {
 	
 	public void setElitismCount(int elitismCount) {
 		this.elitismCount = elitismCount;
+	}
+
+	public int getNumGenerations() {
+		return numGenerations;
+	}
+
+	public void setNumGenerations(int numGenerations) {
+		this.numGenerations = numGenerations;
+	}
+
+	public int getPopulationSize() {
+		return populationSize;
+	}
+
+	public void setPopulationSize(int populationSize) {
+		this.populationSize = populationSize;
 	}
 	
 }

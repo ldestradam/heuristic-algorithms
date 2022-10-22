@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions;
+package mx.com.lestradam.algorithms.functions.generation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,10 +13,22 @@ public class BasicOperations {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static int getMinimunCostIndex(long[] array) {
+	public static int getMaxValueIndex(long[] array) {
+		int index = 0;
+		long max = array[0];
+		for(int i = 1; i< array.length; i++){
+			if(array[i] > max){
+				index = i;
+				max = array[i]; 
+			}
+		}
+		return index;
+	}
+	
+	public static int getMinValueIndex(long[] array) {
 		int index = 0;
 		long minimun = array[0];
-		for(int i = 0; i< array.length; i++){
+		for(int i = 1; i< array.length; i++){
 			if(array[i] < minimun){
 				index = i;
 				minimun = array[i]; 

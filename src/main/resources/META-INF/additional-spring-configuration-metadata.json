@@ -43,5 +43,30 @@
     "name": "params.num-generations",
     "type": "java.lang.String",
     "description": "A description for 'params.num-generations'"
+  },
+  {
+    "name": "params.genetic.num-generations",
+    "type": "java.lang.String",
+    "description": "A description for 'params.genetic.num-generations'"
+  },
+  {
+    "name": "params.abc.food-source-size",
+    "type": "java.lang.String",
+    "description": "A description for 'params.abc.food-source-size'"
+  },
+  {
+    "name": "params.abc.improved-limit",
+    "type": "java.lang.String",
+    "description": "A description for 'params.abc.improved-limit'"
+  },
+  {
+    "name": "params.genetic.population-size",
+    "type": "java.lang.String",
+    "description": "A description for 'params.genetic.population-size'"
+  },
+  {
+    "name": "params.abc.num-iterations",
+    "type": "java.lang.String",
+    "description": "A description for 'params.abc.num-iterations'"
   }
 ]}

@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions;
+package mx.com.lestradam.algorithms.operators;
 
 import java.util.ArrayList;
 import java.util.Arrays;

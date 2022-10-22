@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions;
+package mx.com.lestradam.algorithms.functions.generation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +17,7 @@ import mx.com.lestradam.algorithms.data.DataSet;
 import mx.com.lestradam.algorithms.data.Edge;
 import mx.com.lestradam.algorithms.data.Node;
 import mx.com.lestradam.algorithms.elements.Individual;
+import mx.com.lestradam.algorithms.functions.fitness.BasicFitnessOperations;
 
 /**
  * Individuals with cost minimization
@@ -66,7 +67,7 @@ public class IndividualsWithCostMinimization implements IndividualCreation {
 					logger.trace("Expected route[{}]: {}", i, Arrays.toString(expectedRoute));					
 				}
 			}
-			int routeInd = BasicOperations.getMinimunCostIndex(costs);
+			int routeInd = BasicOperations.getMinValueIndex(costs);
 			long[] updatedRoute = ArrayUtils.add(routes.get(routeInd), customersId[customerInd]);
 			if(logger.isTraceEnabled()) {
 				logger.trace("Min. route index: {}", routeInd);

@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions;
+package mx.com.lestradam.algorithms.functions.fitness;
 
 import java.util.List;
 import java.util.Optional;

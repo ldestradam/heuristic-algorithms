@@ -11,10 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import mx.com.lestradam.algorithms.constants.TestConstants;
+import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.GeneticParameters;
 import mx.com.lestradam.algorithms.data.Node;
 import mx.com.lestradam.algorithms.elements.Individual;
+import mx.com.lestradam.algorithms.functions.generation.IndividualsWithCostMinimization;
 
 @ExtendWith(MockitoExtension.class)
 class IndividualsWithCostMinimizationTest {
@@ -23,7 +24,7 @@ class IndividualsWithCostMinimizationTest {
 	private DataSet dataset;
 	
 	@Mock
-	private GeneticParameters parameters;
+	private AlgorithmsParameters parameters;
 	
 	@InjectMocks
 	private IndividualsWithCostMinimization indCreator; 

@@ -42,10 +42,10 @@ public class HeuristicAlgorithmsApplication implements CommandLineRunner{
 	
 	private void printParameters() {
 		logger.info("PARAMETERS CONFIGURATION");
-		logger.info("POPULATION SIZE: {}", parameters.getPopulationSize());
-		logger.info("NUM. OF GENERATION: {}", parameters.getNumGenerations());
 		logger.info("FLEET CAPACITY: {}", parameters.getFleetCapacity());
 		logger.info("NUM. OF FLEETS: {}", parameters.getNumFleet());
+		logger.info("POPULATION SIZE: {}", geneticParams.getPopulationSize());		
+		logger.info("NUM. OF GENERATION: {}", geneticParams.getNumGenerations());
 		logger.info("CROSSOVER RATE: {}", geneticParams.getCrossoverRate());		
 		logger.info("MUTATION RATE: {}", geneticParams.getMutationRate());
 	}

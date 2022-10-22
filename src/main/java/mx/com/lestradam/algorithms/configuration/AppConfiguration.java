@@ -32,7 +32,9 @@ public class AppConfiguration {
 		GeneticParameters parameters = new GeneticParameters();		
 		parameters.setElitismCount( Integer.valueOf(environment.getProperty("params.genetic.elitism-count")) );
 		parameters.setMutationRate( Double.valueOf(environment.getProperty("params.genetic.mutation-rate")) );
-		parameters.setCrossoverRate( Double.valueOf(environment.getProperty("params.genetic.crossover-rate")) );		
+		parameters.setCrossoverRate( Double.valueOf(environment.getProperty("params.genetic.crossover-rate")) );
+		parameters.setNumGenerations( Integer.valueOf(environment.getProperty("params.genetic.num-generations")) );		
+		parameters.setPopulationSize( Integer.valueOf(environment.getProperty("params.genetic.population-size")) );
 		return parameters;
 	}
 	
@@ -47,8 +49,6 @@ public class AppConfiguration {
 		int totalFleets = (int)(totalRequest / fleetCapacity + (totalRequest % fleetCapacity == 0 ? 0 : 1));
 		parameters.setNumFleet( totalFleets );
 		parameters.setFleetCapacity( fleetCapacity );
-		parameters.setNumGenerations( Integer.valueOf(environment.getProperty("params.num-generations")) );		
-		parameters.setPopulationSize( Integer.valueOf(environment.getProperty("params.population-size")) );
 		return parameters;
 	}
 
