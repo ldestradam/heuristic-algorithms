@@ -76,8 +76,8 @@ public class NeighborhoodOperators {
 		int previousDepot;
 		boolean right = false;
 		do{
-			depotA = getRandomDepotPosition(solution, depot);
-			depotB = getRandomDepotPosition(solution, depot);
+			depotA = getRandomDepotPosition(solution);
+			depotB = getRandomDepotPosition(solution);
 			right = depotA != depotB && depotA != depotB + 1 && depotA + 1 != depotB;
 		}while(!right);
 		if(depotA > depotB){
@@ -161,7 +161,7 @@ public class NeighborhoodOperators {
 		int insertPosition;
 		boolean right = false;
 		int bound = solution.length;
-		int depotInd = getRandomDepotPosition(solution, depot);
+		int depotInd = getRandomDepotPosition(solution);
 		int previousDepot = getPreviousDepot(solution, depotInd, depot);
 		int nextDepot = getNextDepot(solution, depotInd, depot);
 		sectionStart = getPointInRange(previousDepot, depotInd);
@@ -233,15 +233,15 @@ public class NeighborhoodOperators {
 		return rndPoint;
 	}
 	
-	private int getRandomDepotPosition(long[] solution, long depotId){
-		int depot = -1;
+	private int getRandomDepotPosition(long[] solution){
+		int depotId = -1;
 		boolean right = false;
 		int bound = solution.length;
 		do{
-			depot = getRandomlyPoint(bound);
-			right = solution[depot] == depotId;
+			depotId = getRandomlyPoint(bound);
+			right = solution[depotId] == depot;
 		}while(!right);
-		return depot;
+		return depotId;
 	}
 
 }

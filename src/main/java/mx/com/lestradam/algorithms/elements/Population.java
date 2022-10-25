@@ -13,8 +13,8 @@ public class Population {
 		return this.individuals;
 	}
 	
-	public Individual setIndividual(int offset, Individual individual) {
-		return individuals[offset] = individual;
+	public void setIndividual(int offset, Individual individual) {
+		individuals[offset] = individual;
 	}
 	
 	public Individual getIndividual(int offset) {

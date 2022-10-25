@@ -59,12 +59,14 @@ public class CrossoverOperators {
 			long clientId = offspring.get(i);
 			Node client = nodes.stream().filter( node -> node.getId() == clientId)
 					.findFirst().orElseThrow(()-> new DataException("No client found with id: " + clientId));
-			logger.trace("Id cliente: {}", clientId);
-			logger.trace("Cliente: {}", client);
 			long demand = client.getQuantity();
-			logger.trace("Current request: {}", totalDemand);
-			logger.trace("Expected request: {}", (long)(totalDemand + demand));
-			logger.trace("Current solution: {}", Arrays.toString(aux.toArray()));
+			if(logger.isTraceEnabled()) {
+				logger.trace("Id cliente: {}", clientId);
+				logger.trace("Cliente: {}", client);
+				logger.trace("Current request: {}", totalDemand);
+				logger.trace("Expected request: {}", (totalDemand + demand));
+				logger.trace("Current solution: {}", Arrays.toString(aux.toArray()));	
+			}
 			if(totalDemand + demand > parameters.getFleetCapacity()) {
 				currentFleets++;
 				if (currentFleets > parameters.getNumFleet()) {
