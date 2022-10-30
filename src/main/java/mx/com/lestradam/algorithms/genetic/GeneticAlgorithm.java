@@ -5,12 +5,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import mx.com.lestradam.algorithms.data.GeneticParameters;
-import mx.com.lestradam.algorithms.elements.Individual;
-import mx.com.lestradam.algorithms.elements.Population;
-import mx.com.lestradam.algorithms.functions.generation.PopulationOperations;
+import mx.com.lestradam.algorithms.elements.GeneticParameters;
+import mx.com.lestradam.algorithms.elements.Solution;
+import mx.com.lestradam.algorithms.elements.SolutionSet;
+import mx.com.lestradam.algorithms.functions.builders.SolutionSetBuilder;
+import mx.com.lestradam.algorithms.functions.fitness.FitnessFunction;
 import mx.com.lestradam.algorithms.operators.CrossoverOperators;
 import mx.com.lestradam.algorithms.operators.NeighborhoodOperators;
 import mx.com.lestradam.algorithms.operators.SelectionOperators;
@@ -21,36 +23,52 @@ public class GeneticAlgorithm {
 	private static Logger logger = LoggerFactory.getLogger(GeneticAlgorithm.class);
 	
 	@Autowired
+	private GeneticParameters params;
+	
+	@Autowired
+	private SolutionSetBuilder solutionBuilder;
+	
+	@Autowired
+	@Qualifier("FFGeneticAlgorithm")
+	private FitnessFunction fitnessFunc;
+	
+	@Autowired
 	private CrossoverOperators crossover;
 	
 	@Autowired
 	private NeighborhoodOperators neighborhood;
 	
-	@Autowired
-	private GeneticParameters params;
+	public SolutionSet initial() {
+		List<long[]> tempSolutions = solutionBuilder.init(params.getPopulationSize());
+		Solution[] actualSolutions = new Solution[params.getPopulationSize()];
+		long totalFitness = 0;
+		for(int i = 0; i < params.getPopulationSize(); i++) {
+			long fitness = fitnessFunc.evaluateSolution(tempSolutions.get(i));
+			totalFitness += fitness;
+			actualSolutions[i] = new Solution(tempSolutions.get(i), fitness);
+		}
+		return new SolutionSet(actualSolutions, totalFitness);
+	}
 	
-	@Autowired
-	private PopulationOperations populationOps;
-	
-	public Population execute() {
+	public SolutionSet execute() {
 		int generation = 1;
 		// Initialize population
-		Population population = populationOps.initPopulation(params.getPopulationSize());
+		SolutionSet population = initial();
 		while(generation < params.getNumGenerations()) {
 			// Print current generation
 			if (logger.isDebugEnabled()) 
 				printCurrentGeneration(population, generation);
 			// Create temporary population
-			Population tempPopulation = new Population(params.getPopulationSize());
+			SolutionSet tempPopulation = new SolutionSet(params.getPopulationSize());
 			//Loop over current population
 			for(int i = 0; i < params.getPopulationSize(); i = i +2) {
 				// Select parents
-				Individual parent1 = SelectionOperators.rouletteSelection(population.getIndividuals(), population.getPopulationFitness());
-				Individual parent2 = SelectionOperators.rouletteSelection(population.getIndividuals(), population.getPopulationFitness());
+				Solution parent1 = SelectionOperators.rouletteSelection(population.getSolutions(), population.getFitness());
+				Solution parent2 = SelectionOperators.rouletteSelection(population.getSolutions(), population.getFitness());
 				//Apply crossover
 				if(params.getCrossoverRate() > Math.random()) {
 					//Initialize offspring
-					List<long[]> offsprings = crossover.orderCrossover(parent1.getChromosome(), parent2.getChromosome());
+					List<long[]> offsprings = crossover.orderCrossover(parent1.getRepresentation(), parent2.getRepresentation());
 					long[] chromosome1 = offsprings.get(0);
 					long[] chromosome2 = offsprings.get(1);
 					// Apply mutation
@@ -59,21 +77,21 @@ public class GeneticAlgorithm {
 						chromosome2 = neighborhood.randomSwaps(chromosome2);
 					}
 					//Add offsprings to new population
-					Individual offspring1 = new Individual(chromosome1);
-					offspring1.setFitness(populationOps.getIndividualFitness(offspring1.getChromosome()) );
-					Individual offspring2 = new Individual(chromosome2);
-					offspring2.setFitness(populationOps.getIndividualFitness(offspring2.getChromosome()));
-					tempPopulation.setIndividual(i, offspring1);
-					tempPopulation.setIndividual(i + 1, offspring2);
+					Solution offspring1 = new Solution(chromosome1);
+					offspring1.setFitness(fitnessFunc.evaluateSolution(offspring1.getRepresentation()) );
+					Solution offspring2 = new Solution(chromosome2);
+					offspring2.setFitness(fitnessFunc.evaluateSolution(offspring2.getRepresentation()));
+					tempPopulation.setSolution(i, offspring1);
+					tempPopulation.setSolution(i + 1, offspring2);
 				}else {
 					// Add parents to new population without applying crossover
-					tempPopulation.setIndividual(i, parent1);
-					tempPopulation.setIndividual(i + 1, parent2);
+					tempPopulation.setSolution(i, parent1);
+					tempPopulation.setSolution(i + 1, parent2);
 				}
 			}
 			// Set fitness population
-			long populationFitness = populationOps.getPopulationFitness(tempPopulation.getIndividuals());
-			tempPopulation.setPopulationFitness(populationFitness);
+			long populationFitness = fitnessFunc.evaluateSolutionSet(tempPopulation.getSolutions());
+			tempPopulation.setFitness(populationFitness);
 			// Increase generation counter
 			generation++;
 			// Set temporary population as new population
@@ -82,10 +100,10 @@ public class GeneticAlgorithm {
 		return population;
 	}
 	
-	private void printCurrentGeneration(Population population, int generation) {
+	private void printCurrentGeneration(SolutionSet population, int generation) {
 		logger.debug("CURRENT GENERATION: {}", generation);
-		logger.debug("GENERATION FITNESS: {}", population.getPopulationFitness());
-		for(Individual individual : population.getIndividuals())
+		logger.debug("GENERATION FITNESS: {}", population.getFitness());
+		for(Solution individual : population.getSolutions())
 			logger.info("{}", individual);
 	}
 	

@@ -7,14 +7,14 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.Edge;
-import mx.com.lestradam.algorithms.data.Node;
-import mx.com.lestradam.algorithms.functions.generation.BasicOperations;
+import mx.com.lestradam.algorithms.elements.DataSet;
+import mx.com.lestradam.algorithms.elements.Edge;
+import mx.com.lestradam.algorithms.elements.Node;
+import mx.com.lestradam.algorithms.functions.basic.RoutesOperations;
 
-@Component("SimpleFitness")
-public class SimpleFitness implements IndividualFitness {
-		
+@Component("OFTotalDistance")
+public class OFTotalDistance implements ObjectiveFunction{
+	
 	private List<Edge> edges;	
 	private Node depot;
 	
@@ -28,11 +28,11 @@ public class SimpleFitness implements IndividualFitness {
 	}
 
 	@Override
-	public long evaluate(long[] chromosome){
+	public long evaluate(long[] solution) {
 		long cost = 0;
-		List<long[]> routes = BasicOperations.splitIntoRoute(chromosome, depot.getId());
+		List<long[]> routes = RoutesOperations.splitIntoRoute(solution, depot.getId());
 		for(long[] route: routes)
-			cost += BasicFitnessOperations.getDistanceRoute(route, edges);
+			cost += RoutesOperations.getDistanceRoute(route, edges);
 		return cost;
 	}
 

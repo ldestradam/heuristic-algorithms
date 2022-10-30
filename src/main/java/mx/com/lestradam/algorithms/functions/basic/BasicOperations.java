@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions.generation;
+package mx.com.lestradam.algorithms.functions.basic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,28 +35,6 @@ public class BasicOperations {
 			}
 		}
 		return index;
-	}
-	
-	public static List<long[]> splitIntoRoute(long[] chromosome, long depot){
-		List<long[]> routes = new ArrayList<>();
-		int offset = 0;
-		int depotInd = getNextDepot(chromosome, offset, depot);
-		do {
-			routes.add(Arrays.copyOfRange(chromosome, offset, depotInd));			
-			offset = depotInd;
-			depotInd = getNextDepot(chromosome, offset, depot);
-			if(depotInd == 0)
-				routes.add(Arrays.copyOfRange(chromosome, offset, chromosome.length));
-		} while (depotInd != 0);
-		return routes;
-	}
-	
-	public static int getNextDepot(long[] solution, int offset, long depot){
-		for(int i = offset + 1; i < solution.length; i++){
-			if(solution[i] == depot)
-				return i;
-		}
-		return 0;
 	}
 	
 	public static int getRandomlyPoint(int bound){

@@ -12,7 +12,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import mx.com.lestradam.algorithms.data.DataSet;
+import mx.com.lestradam.algorithms.elements.DataSet;
 
 /**
  * A neighborhood operator is used to obtain a new solution from the current solution.
@@ -47,15 +47,16 @@ public class NeighborhoodOperators {
 		int swapPointA;
 		int swapPointB;
 		int bound = solution.length;
+		long[] tmpSolution = Arrays.copyOf(solution, solution.length);
 		do{
 			swapPointA = getRandomlyPoint(bound);
 			swapPointB = getRandomlyPoint(bound);
-			right = notEquals(swapPointA, swapPointB) && notDepot(swapPointA, swapPointB, solution, depot);
+			right = notEquals(swapPointA, swapPointB) && notDepot(swapPointA, swapPointB, tmpSolution);
 		}while(!right);
-		long aux = solution[swapPointA];
-		solution[swapPointA] = solution[swapPointB];
-		solution[swapPointB] = aux;
-		return solution;
+		long aux = tmpSolution[swapPointA];
+		tmpSolution[swapPointA] = tmpSolution[swapPointB];
+		tmpSolution[swapPointB] = aux;
+		return tmpSolution;
 	}
 	
 	/**
@@ -75,9 +76,10 @@ public class NeighborhoodOperators {
 		int nextDepot;
 		int previousDepot;
 		boolean right = false;
+		long[] tmpSolution = Arrays.copyOf(solution, solution.length);
 		do{
-			depotA = getRandomDepotPosition(solution);
-			depotB = getRandomDepotPosition(solution);
+			depotA = getRandomDepotPosition(tmpSolution);
+			depotB = getRandomDepotPosition(tmpSolution);
 			right = depotA != depotB && depotA != depotB + 1 && depotA + 1 != depotB;
 		}while(!right);
 		if(depotA > depotB){
@@ -86,14 +88,14 @@ public class NeighborhoodOperators {
 			depotB = aux;
 		}
 		
-		previousDepot = getPreviousDepot(solution, depotA, depot);		
-		nextDepot = getNextDepot(solution, depotA, depot);
+		previousDepot = getPreviousDepot(tmpSolution, depotA, depot);		
+		nextDepot = getNextDepot(tmpSolution, depotA, depot);
 		
 		sectionStartA = getPointInRange(previousDepot, depotA);
 		sectionFinishA = getPointInRange(depotA, nextDepot);
 		
-		previousDepot = getPreviousDepot(solution, depotB, depot);
-		nextDepot = getNextDepot(solution, depotB, depot);
+		previousDepot = getPreviousDepot(tmpSolution, depotB, depot);
+		nextDepot = getNextDepot(tmpSolution, depotB, depot);
 		
 		sectionStartB = getPointInRange(previousDepot, depotB);
 		sectionFinishB = getPointInRange(depotB, nextDepot);
@@ -105,15 +107,15 @@ public class NeighborhoodOperators {
 			sectionStartB = depotB;
 		}
 		
-		long[] sectionA = Arrays.copyOfRange(solution, 0, sectionStartA);
-		long[] sectionB = Arrays.copyOfRange(solution, sectionStartA, sectionFinishA + 1);
-		long[] sectionC = Arrays.copyOfRange(solution, sectionFinishA + 1, sectionStartB);
-		long[] sectionD = Arrays.copyOfRange(solution, sectionStartB, sectionFinishB + 1);
-		long[] sectionE = Arrays.copyOfRange(solution, sectionFinishB + 1, solution.length);
+		long[] sectionA = Arrays.copyOfRange(tmpSolution, 0, sectionStartA);
+		long[] sectionB = Arrays.copyOfRange(tmpSolution, sectionStartA, sectionFinishA + 1);
+		long[] sectionC = Arrays.copyOfRange(tmpSolution, sectionFinishA + 1, sectionStartB);
+		long[] sectionD = Arrays.copyOfRange(tmpSolution, sectionStartB, sectionFinishB + 1);
+		long[] sectionE = Arrays.copyOfRange(tmpSolution, sectionFinishB + 1, tmpSolution.length);
 		List<long[]> sections = Arrays.asList(sectionA, sectionD, sectionC, sectionB, sectionE);
 		for(long[] section : sections)
-			solution = ArrayUtils.addAll(solution, section);
-		return solution;
+			tmpSolution = ArrayUtils.addAll(tmpSolution, section);
+		return tmpSolution;
 	}
 	
 	/**
@@ -128,23 +130,24 @@ public class NeighborhoodOperators {
 		int insertPoint;
 		int bound = solution.length;
 		List<Long> tempSolution = new ArrayList<>();
+		long[] randSolution = Arrays.copyOf(solution, solution.length);
 		boolean right = false;
 		do{
 			insertPosition = getRandomlyPoint(bound);
 			insertPoint = getRandomlyPoint(bound);
-			right = notEquals(insertPoint, insertPosition) && notDepot(insertPoint, insertPosition, solution, depot);
+			right = notEquals(insertPoint, insertPosition) && notDepot(insertPoint, insertPosition, randSolution);
 		}while(!right);	
 	
-		for(int i = 0; i < solution.length; i++){
+		for(int i = 0; i < randSolution.length; i++){
 			if(i == insertPosition){
-				tempSolution.add(solution[insertPoint]);
-				tempSolution.add(solution[i]);
+				tempSolution.add(randSolution[insertPoint]);
+				tempSolution.add(randSolution[i]);
 			}else if(i != insertPoint){
-				tempSolution.add(solution[i]);
+				tempSolution.add(randSolution[i]);
 			}
 		}
-		solution = tempSolution.stream().mapToLong(i -> i).toArray();	
-		return solution;
+		randSolution = tempSolution.stream().mapToLong(i -> i).toArray();	
+		return randSolution;
 	}
 	
 	/**
@@ -161,46 +164,42 @@ public class NeighborhoodOperators {
 		int insertPosition;
 		boolean right = false;
 		int bound = solution.length;
-		int depotInd = getRandomDepotPosition(solution);
-		int previousDepot = getPreviousDepot(solution, depotInd, depot);
-		int nextDepot = getNextDepot(solution, depotInd, depot);
+		long[] randSolution = Arrays.copyOf(solution, solution.length);
+		int depotInd = getRandomDepotPosition(randSolution);
+		int previousDepot = getPreviousDepot(randSolution, depotInd, depot);
+		int nextDepot = getNextDepot(randSolution, depotInd, depot);
 		sectionStart = getPointInRange(previousDepot, depotInd);
 		sectionFinish = getPointInRange(depotInd, nextDepot);
-		
 		if(sectionStart == 0){
-			sectionFinish = getNextDepot(solution, sectionStart, depot) - 1;
+			sectionFinish = getNextDepot(randSolution, sectionStart, depot) - 1;
 		}
-		
 		do{
 			insertPosition = getRandomlyPoint(bound);
 			if( ( notEquals(insertPosition, sectionStart) && notEquals(insertPosition, sectionFinish) ) && notEquals(insertPosition, 0) 
 					&& (insertPosition < sectionStart || insertPosition > sectionFinish) )
 				right = true;
 		}while(!right);
-		
-		long[] section = Arrays.copyOfRange(solution, sectionStart, sectionFinish + 1);
-		
+		long[] section = Arrays.copyOfRange(randSolution, sectionStart, sectionFinish + 1);
 		List<Long> tempSolution = new ArrayList<>();
-		for(int i = 0; i < solution.length ; i++){
+		for(int i = 0; i < randSolution.length ; i++){
 			if(i == insertPosition){
 				tempSolution.addAll(Arrays.stream(section).boxed().collect(Collectors.toList()));
-				tempSolution.add(solution[i]);
+				tempSolution.add(randSolution[i]);
 			}else{
 				if( (i < sectionStart) || (i > sectionFinish ) ){
-					tempSolution.add(solution[i]);
+					tempSolution.add(randSolution[i]);
 				}
 			}
 		}
-
-		solution = tempSolution.stream().mapToLong(i -> i).toArray();	
-		return solution;		
+		randSolution = tempSolution.stream().mapToLong(i -> i).toArray();	
+		return randSolution;
 	}
 	
 	private int getRandomlyPoint(int bound){
 		return rnd.nextInt(bound);
 	}
 	
-	private boolean notDepot(int pointA, int pointB, long[] solution, long depot){
+	private boolean notDepot(int pointA, int pointB, long[] solution){
 		return depot != solution[pointA] && depot != solution[pointB];
 	}
 	

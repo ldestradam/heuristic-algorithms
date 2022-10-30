@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.data;
+package mx.com.lestradam.algorithms.elements;
 
 public class Node {
 	

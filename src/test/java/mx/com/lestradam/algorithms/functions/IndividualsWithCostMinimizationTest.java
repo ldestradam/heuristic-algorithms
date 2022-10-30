@@ -11,11 +11,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import mx.com.lestradam.algorithms.constants.TestConstants;
-import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
-import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.Node;
-import mx.com.lestradam.algorithms.elements.Individual;
-import mx.com.lestradam.algorithms.functions.generation.IndividualsWithCostMinimization;
+import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
+import mx.com.lestradam.algorithms.elements.DataSet;
+import mx.com.lestradam.algorithms.elements.Node;
+import mx.com.lestradam.algorithms.functions.builders.SBCostMinimization;
 
 @ExtendWith(MockitoExtension.class)
 class IndividualsWithCostMinimizationTest {
@@ -27,7 +26,7 @@ class IndividualsWithCostMinimizationTest {
 	private AlgorithmsParameters parameters;
 	
 	@InjectMocks
-	private IndividualsWithCostMinimization indCreator; 
+	private SBCostMinimization indCreator; 
 	
 	@BeforeEach
 	void setUp() {		
@@ -39,8 +38,8 @@ class IndividualsWithCostMinimizationTest {
 		when(parameters.getNumFleet()).thenReturn(TestConstants.SET1_NUM_FLEETS);
 		when(dataset.getNodes()).thenReturn(TestConstants.SET1_NODES);
 		when(dataset.getEdges()).thenReturn(TestConstants.SET1_EDGES);
-		Individual ind = indCreator.createIndividual();
-		assertEquals(ind.getChromosome().length, TestConstants.SET1_NUM_FLEETS + TestConstants.SET1_NUM_NODES);
+		long[] solution = indCreator.createSolution();
+		assertEquals(solution.length, TestConstants.SET1_NUM_FLEETS + TestConstants.SET1_NUM_NODES);
 	}
 	
 	@Test
@@ -48,8 +47,8 @@ class IndividualsWithCostMinimizationTest {
 		when(parameters.getNumFleet()).thenReturn(TestConstants.SET2_NUM_FLEETS);
 		when(dataset.getNodes()).thenReturn(TestConstants.SET2_NODES);
 		when(dataset.getEdges()).thenReturn(TestConstants.SET2_EDGES);
-		Individual ind = indCreator.createIndividual();
-		assertEquals(ind.getChromosome().length, TestConstants.SET2_NUM_FLEETS + TestConstants.SET1_NUM_NODES);
+		long[] solution = indCreator.createSolution();
+		assertEquals(solution.length, TestConstants.SET2_NUM_FLEETS + TestConstants.SET1_NUM_NODES);
 	}
 
 }

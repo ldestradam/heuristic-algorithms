@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions.generation;
+package mx.com.lestradam.algorithms.functions.builders;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,15 +12,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
-import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.Edge;
-import mx.com.lestradam.algorithms.data.Node;
-import mx.com.lestradam.algorithms.elements.Individual;
-import mx.com.lestradam.algorithms.functions.fitness.BasicFitnessOperations;
+import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
+import mx.com.lestradam.algorithms.elements.DataSet;
+import mx.com.lestradam.algorithms.elements.Edge;
+import mx.com.lestradam.algorithms.elements.Node;
+import mx.com.lestradam.algorithms.functions.basic.RoutesOperations;
+import mx.com.lestradam.algorithms.functions.basic.BasicOperations;
 
 /**
- * Individuals with cost minimization
+ * Solution with cost minimization
+ * 
  * An initial solution is constructed by assigning one customer at a time to one of the m vehicle routes.
  * The selection of the customer is randomly made. The customer is then assigned to the location that
  * minimizes the cost of assigning this customer over the current set of vehicle routes. The above 
@@ -29,10 +30,10 @@ import mx.com.lestradam.algorithms.functions.fitness.BasicFitnessOperations;
  * @author leonardo estrada
  *
  */
-@Component("IndividualsWithCostMinimization")
-public class IndividualsWithCostMinimization implements IndividualCreation {
+@Component("SBCostMinimization")
+public class SBCostMinimization implements SolutionBuilder {
 	
-	private static Logger logger = LoggerFactory.getLogger(IndividualsWithCostMinimization.class);
+	private static Logger logger = LoggerFactory.getLogger(SBCostMinimization.class);
 	
 	private Random rand = new Random();
 	
@@ -42,8 +43,11 @@ public class IndividualsWithCostMinimization implements IndividualCreation {
 	@Autowired
 	private AlgorithmsParameters parameters;
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Individual createIndividual() {
+	public long[] createSolution() {
 		long[] solution = {};
 		List<Node> nodes = dataset.getNodes();
 		List<Edge> edges = dataset.getEdges();
@@ -61,7 +65,7 @@ public class IndividualsWithCostMinimization implements IndividualCreation {
 			}
 			for(int i = 0; i < routes.size(); i++) {
 				long[] expectedRoute = ArrayUtils.add(routes.get(i), customersId[customerInd]);
-				costs[i] = BasicFitnessOperations.getDistanceRoute(expectedRoute, edges);
+				costs[i] = RoutesOperations.getDistanceRoute(expectedRoute, edges);
 				if(logger.isTraceEnabled()) {
 					logger.trace("Expected Cost[{}]: {}", i, costs[i]);
 					logger.trace("Expected route[{}]: {}", i, Arrays.toString(expectedRoute));					
@@ -78,9 +82,9 @@ public class IndividualsWithCostMinimization implements IndividualCreation {
 		}
 		for(long[] routeAux : routes)
 			solution = ArrayUtils.addAll(solution, routeAux);
-		if(logger.isDebugEnabled())
-			logger.debug("Chromosome generated: {}", Arrays.toString(solution));
-		return new Individual(solution);
+		if(logger.isTraceEnabled())
+			logger.trace("Chromosome generated: {}", Arrays.toString(solution));
+		return solution;
 	}
 	
 	private int getRandomCustomerIndex(long[] customersId, List<long[]> routes) {

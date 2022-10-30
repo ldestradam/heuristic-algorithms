@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions.generation;
+package mx.com.lestradam.algorithms.functions.builders;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,14 +14,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
-import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.Node;
-import mx.com.lestradam.algorithms.elements.Individual;
+import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
+import mx.com.lestradam.algorithms.elements.DataSet;
+import mx.com.lestradam.algorithms.elements.Node;
 
 
 /**
- * Individuals with capacity constraint
+ * Solution with capacity constraint
  * 
  * The solution is constructed by assigning one customer at a time to one of the m vehicle routes.
  * The selection of the customer is randomly made. The customer is then assigned to the route that
@@ -31,10 +30,10 @@ import mx.com.lestradam.algorithms.elements.Individual;
  * @author leonardo estrada
  *
  */
-@Component("IndividualsWithCapacityConstraint")
-public class IndividualsWithCapacityConstraint implements IndividualCreation {
+@Component("SBCapacityConstraint")
+public class SBCapacityConstraint implements SolutionBuilder {
 	
-	private static Logger logger = LogManager.getLogger(IndividualsWithCapacityConstraint.class);
+	private static Logger logger = LogManager.getLogger(SBCapacityConstraint.class);
 	private Random rand = new Random();	
 	private List<Node> customers;
 	private Node depot;
@@ -46,32 +45,16 @@ public class IndividualsWithCapacityConstraint implements IndividualCreation {
 	private AlgorithmsParameters parameters;
 	
 	@PostConstruct
-	public void init() {
+	private void init() {
 		customers = dataset.getNodes();
 		depot = dataset.getDepot();
 	}
 
-	public long getRandomCustomerId(List<Long> customers, List<Long> customersRouted) {
-		long customerId = 0;
-		int customerIndex = 0;
-		boolean isOnRoute = false;	
-		int customersLength = customers.size();
-		do {
-			if(logger.isDebugEnabled()) {
-				logger.debug("Customers: {}", Arrays.toString(customers.stream().mapToLong(i->i).toArray()));
-				logger.debug("Customers Routed: {}", Arrays.toString(customersRouted.stream().mapToLong(i->i).toArray()));
-			}
-			customerIndex = rand.nextInt(customersLength);
-			customerId = customers.get(customerIndex);
-			logger.debug("Customer id: {}", customerId);
-			isOnRoute = !customersRouted.contains(customerId);
-		} while (!isOnRoute);
-		return customerId;
-	}
-	
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Individual createIndividual() {
+	public long[] createSolution() {
 		long totalCapacity = 0;	
 		long depotId = depot.getId();
 		List<long[]> routes = new ArrayList<>();
@@ -106,10 +89,27 @@ public class IndividualsWithCapacityConstraint implements IndividualCreation {
 			customersId.remove(Long.valueOf(customerId));
 		}		
 		long[] solution = {};
-		for(long[] routeAux : routes) {
+		for(long[] routeAux : routes)
 			solution = ArrayUtils.addAll(solution, routeAux);
-		}		
-		return new Individual(solution);
+		return solution;
+	}
+	
+	private long getRandomCustomerId(List<Long> customers, List<Long> customersRouted) {
+		long customerId = 0;
+		int customerIndex = 0;
+		boolean isOnRoute = false;	
+		int customersLength = customers.size();
+		do {
+			if(logger.isDebugEnabled()) {
+				logger.debug("Customers: {}", Arrays.toString(customers.stream().mapToLong(i->i).toArray()));
+				logger.debug("Customers Routed: {}", Arrays.toString(customersRouted.stream().mapToLong(i->i).toArray()));
+			}
+			customerIndex = rand.nextInt(customersLength);
+			customerId = customers.get(customerIndex);
+			logger.debug("Customer id: {}", customerId);
+			isOnRoute = !customersRouted.contains(customerId);
+		} while (!isOnRoute);
+		return customerId;
 	}
 
 }

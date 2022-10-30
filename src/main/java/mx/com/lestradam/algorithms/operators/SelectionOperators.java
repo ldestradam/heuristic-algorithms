@@ -1,6 +1,6 @@
 package mx.com.lestradam.algorithms.operators;
 
-import mx.com.lestradam.algorithms.elements.Individual;
+import mx.com.lestradam.algorithms.elements.Solution;
 
 public class SelectionOperators {
 	
@@ -8,12 +8,12 @@ public class SelectionOperators {
 	    throw new IllegalStateException("Utility class");
 	  }
 	
-	public static Individual rouletteSelection(Individual[] individuals, double populationFitness) {
+	public static Solution rouletteSelection(Solution[] individuals, double populationFitness) {
 		// Spin roulette wheel
 		double rouletteWheelPosition = Math.random() * populationFitness;
 		//Find parent
 		double spinWheel = 0;
-		for(Individual individual: individuals) {
+		for(Solution individual: individuals) {
 			spinWheel += individual.getFitness();
 			if (spinWheel >= rouletteWheelPosition)
 				return individual;
@@ -21,7 +21,7 @@ public class SelectionOperators {
 		return individuals[individuals.length - 1];
 	}
 	
-	public static int rouletteSelectionIndex(Individual[] individuals, double populationFitness) {
+	public static int rouletteSelectionIndex(Solution[] individuals, double populationFitness) {
 		// Spin roulette wheel
 		double rouletteWheelPosition = Math.random() * populationFitness;
 		//Find parent

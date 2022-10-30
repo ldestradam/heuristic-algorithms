@@ -7,10 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
-import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.GeneticParameters;
-import mx.com.lestradam.algorithms.data.Node;
+import mx.com.lestradam.algorithms.elements.ABCParameters;
+import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
+import mx.com.lestradam.algorithms.elements.DataSet;
+import mx.com.lestradam.algorithms.elements.GeneticParameters;
+import mx.com.lestradam.algorithms.elements.Node;
 import mx.com.lestradam.algorithms.utils.CsvReader;
 
 @Configuration
@@ -50,6 +51,16 @@ public class AppConfiguration {
 		parameters.setNumFleet( totalFleets );
 		parameters.setFleetCapacity( fleetCapacity );
 		return parameters;
+	}
+	
+	@Bean
+	ABCParameters abcParameters(Environment environment) {
+		ABCParameters parameters = new ABCParameters();
+		parameters.setFoodSourceSize(Integer.valueOf(environment.getProperty("params.abc.food-source-size")));
+		parameters.setImprovedLimit(Integer.valueOf(environment.getProperty("params.abc.improved-limit")));
+		parameters.setNumIterations(Integer.valueOf(environment.getProperty("params.abc.num-iterations")));
+		parameters.setOnlookersBees(Integer.valueOf(environment.getProperty("params.abc.onlookers-bees")));
+		return parameters; 
 	}
 
 }

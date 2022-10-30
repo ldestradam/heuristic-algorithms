@@ -1,10 +1,11 @@
-package mx.com.lestradam.algorithms.data;
+package mx.com.lestradam.algorithms.elements;
 
 public class ABCParameters {
 	
 	private int foodSourceSize;
 	private int improvedLimit;
 	private int numIterations;
+	private int onlookersBees;
 	
 	public int getFoodSourceSize() {
 		return foodSourceSize;
@@ -28,5 +29,13 @@ public class ABCParameters {
 	
 	public void setNumIterations(int numIterations) {
 		this.numIterations = numIterations;
+	}
+
+	public int getOnlookersBees() {
+		return onlookersBees;
+	}
+
+	public void setOnlookersBees(int onlookersBees) {
+		this.onlookersBees = onlookersBees;
 	}
 }

@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.abc.ArtificialBeeColony;
-import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
-import mx.com.lestradam.algorithms.data.GeneticParameters;
-import mx.com.lestradam.algorithms.elements.Individual;
-import mx.com.lestradam.algorithms.elements.Population;
+import mx.com.lestradam.algorithms.elements.ABCParameters;
+import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
+import mx.com.lestradam.algorithms.elements.GeneticParameters;
+import mx.com.lestradam.algorithms.elements.Solution;
+import mx.com.lestradam.algorithms.elements.SolutionSet;
 import mx.com.lestradam.algorithms.exceptions.DataException;
 import mx.com.lestradam.algorithms.genetic.GeneticAlgorithm;
 
@@ -30,10 +31,13 @@ public class CommandLineApplication {
 	private ArtificialBeeColony abc;
 	
 	@Autowired
+	private AlgorithmsParameters generalParams;
+	
+	@Autowired
 	private GeneticParameters geneticParams;
 	
 	@Autowired
-	private AlgorithmsParameters parameters;
+	private ABCParameters abcParams;
 	
 	public void execute(String[] arguments) {
 		this.arguments = arguments;
@@ -51,21 +55,22 @@ public class CommandLineApplication {
 	
 	private void executeAbcAlgorithm() {
 		printGeneralParameters();
-		Population population = abc.execute();
+		printAbcParameters();
+		SolutionSet population = abc.execute();
 		printPopulation(population);
 	}
 	
 	private void executeGeneticAlgorithm() {
 		printGeneralParameters();
 		printGeneticParameters();
-		Population population = genetic.execute();
+		SolutionSet population = genetic.execute();
 		printPopulation(population);
 	}
 	
 	private void printGeneralParameters() {
 		logger.info("GENERAL PARAMETERS CONFIGURATION");
-		logger.info("FLEET CAPACITY: {}", parameters.getFleetCapacity());
-		logger.info("NUM. OF FLEETS: {}", parameters.getNumFleet());
+		logger.info("FLEET CAPACITY: {}", generalParams.getFleetCapacity());
+		logger.info("NUM. OF FLEETS: {}", generalParams.getNumFleet());
 	}
 	
 	private void printGeneticParameters() {
@@ -76,10 +81,18 @@ public class CommandLineApplication {
 		logger.info("MUTATION RATE: {}", geneticParams.getMutationRate());
 	}
 	
-	private void printPopulation(Population population) {
+	private void printAbcParameters() {
+		logger.info("ABC PARAMETERS CONFIGURATION");
+		logger.info("FOOD SOURCE SIZE {}", abcParams.getFoodSourceSize());
+		logger.info("IMPROVED LIMIT: {}", abcParams.getImprovedLimit());
+		logger.info("NUM. OF ITERATIONS: {}", abcParams.getNumIterations());
+		logger.info("ONLOOKERS BEES: {}", abcParams.getOnlookersBees());
+	}
+	
+	private void printPopulation(SolutionSet population) {
 		logger.info("FINAL RESULTS");
-		logger.info("POPULATION FITNESS: {}", population.getPopulationFitness());
-		for(Individual individual : population.getIndividuals()) {
+		logger.info("POPULATION FITNESS: {}", population.getFitness());
+		for(Solution individual : population.getSolutions()) {
 			logger.info("{}", individual);
 		}
 	}

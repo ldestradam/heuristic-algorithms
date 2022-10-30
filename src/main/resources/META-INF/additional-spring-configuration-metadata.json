@@ -68,5 +68,10 @@
     "name": "params.abc.num-iterations",
     "type": "java.lang.String",
     "description": "A description for 'params.abc.num-iterations'"
+  },
+  {
+    "name": "params.abc.onlookers-bees",
+    "type": "java.lang.String",
+    "description": "A description for 'params.abc.onlookers-bees'"
   }
 ]}

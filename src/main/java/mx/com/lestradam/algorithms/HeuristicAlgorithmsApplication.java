@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import mx.com.lestradam.algorithms.cli.CommandLineApplication;
+import mx.com.lestradam.algorithms.exceptions.DataException;
 
 @SpringBootApplication
 public class HeuristicAlgorithmsApplication implements CommandLineRunner{
@@ -25,7 +26,12 @@ public class HeuristicAlgorithmsApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		application.execute(args);
+		try {
+			application.execute(args);
+		} catch (DataException e) {
+			logger.error("Error {}", e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 }

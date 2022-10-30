@@ -8,8 +8,8 @@ import java.util.List;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
-import mx.com.lestradam.algorithms.data.Edge;
-import mx.com.lestradam.algorithms.data.Node;
+import mx.com.lestradam.algorithms.elements.Edge;
+import mx.com.lestradam.algorithms.elements.Node;
 import mx.com.lestradam.algorithms.exceptions.DataException;
 
 public class CsvReader {

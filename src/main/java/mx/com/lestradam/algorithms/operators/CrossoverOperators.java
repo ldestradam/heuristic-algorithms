@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import mx.com.lestradam.algorithms.data.AlgorithmsParameters;
-import mx.com.lestradam.algorithms.data.DataSet;
-import mx.com.lestradam.algorithms.data.Node;
+import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
+import mx.com.lestradam.algorithms.elements.DataSet;
+import mx.com.lestradam.algorithms.elements.Node;
 import mx.com.lestradam.algorithms.exceptions.DataException;
-import mx.com.lestradam.algorithms.functions.generation.BasicOperations;
+import mx.com.lestradam.algorithms.functions.basic.BasicOperations;
 
 @Component
 public class CrossoverOperators {
