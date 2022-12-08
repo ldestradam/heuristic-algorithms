@@ -12,6 +12,7 @@ import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.elements.DataSet;
 import mx.com.lestradam.algorithms.elements.GeneticParameters;
 import mx.com.lestradam.algorithms.elements.Node;
+import mx.com.lestradam.algorithms.elements.PSOParameters;
 import mx.com.lestradam.algorithms.utils.CsvReader;
 
 @Configuration
@@ -60,6 +61,17 @@ public class AppConfiguration {
 		parameters.setImprovedLimit(Integer.valueOf(environment.getProperty("params.abc.improved-limit")));
 		parameters.setNumIterations(Integer.valueOf(environment.getProperty("params.abc.num-iterations")));
 		parameters.setOnlookersBees(Integer.valueOf(environment.getProperty("params.abc.onlookers-bees")));
+		return parameters; 
+	}
+	
+	@Bean
+	PSOParameters psoParameters(Environment environment) {
+		PSOParameters parameters = new PSOParameters();		
+		parameters.setNumIterations(Integer.valueOf(environment.getProperty("params.pso.num-iterations")));
+		parameters.setAccelerationC1(Integer.valueOf(environment.getProperty("params.pso.acceleration-c1")));
+		parameters.setAccelerationC2(Integer.valueOf(environment.getProperty("params.pso.acceleration-c2")));
+		parameters.setInertia(Integer.valueOf(environment.getProperty("params.pso.inertia")));
+		parameters.setNumParticles(Integer.valueOf(environment.getProperty("params.pso.particles")));
 		return parameters; 
 	}
 

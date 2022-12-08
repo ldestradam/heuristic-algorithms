@@ -1,8 +1,5 @@
 package mx.com.lestradam.algorithms.functions.basic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class BasicOperations {
@@ -11,6 +8,30 @@ public class BasicOperations {
 	
 	private BasicOperations() {
 		throw new IllegalStateException("Utility class");
+	}
+	
+	public static int getMaxValueIndex(double[] array) {
+		int index = 0;
+		double max = array[0];
+		for(int i = 1; i< array.length; i++){
+			if(array[i] > max){
+				index = i;
+				max = array[i]; 
+			}
+		}
+		return index;
+	}
+	
+	public static int getMinValueIndex(double[] array) {
+		int index = 0;
+		double minimun = array[0];
+		for(int i = 1; i< array.length; i++){
+			if(array[i] < minimun){
+				index = i;
+				minimun = array[i]; 
+			}
+		}
+		return index;
 	}
 	
 	public static int getMaxValueIndex(long[] array) {
