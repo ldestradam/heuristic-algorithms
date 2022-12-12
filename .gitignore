@@ -36,3 +36,8 @@ build/
 .mvn/
 mvnw
 mvnw.cmd
+/dataset
+./dataset
+/logs
+./logs
+.gitignore
