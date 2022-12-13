@@ -3,21 +3,17 @@ package mx.com.lestradam.algorithms.functions.builders;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.interceptor.BasicOperation;
 import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.elements.DataSet;
 import mx.com.lestradam.algorithms.elements.Node;
-import mx.com.lestradam.algorithms.elements.PSOParameters;
-import mx.com.lestradam.algorithms.elements.PSOSolution;
 import mx.com.lestradam.algorithms.functions.basic.BasicOperations;
 import mx.com.lestradam.algorithms.functions.basic.RoutesOperations;
 

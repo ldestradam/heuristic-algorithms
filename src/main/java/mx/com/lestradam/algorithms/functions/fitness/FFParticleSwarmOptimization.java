@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.elements.PSOParameters;
-import mx.com.lestradam.algorithms.elements.Solution;
 
 @Component("FFParticleSwarmOptimization")
 public class FFParticleSwarmOptimization {

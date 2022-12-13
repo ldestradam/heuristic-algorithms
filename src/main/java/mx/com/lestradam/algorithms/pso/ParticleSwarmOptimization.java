@@ -81,11 +81,8 @@ public class ParticleSwarmOptimization {
 		initial();
 		int iteration = 1;		
 		while(iteration < psoParameters.getNumIterations()) {
-			if (logger.isDebugEnabled())
-				logger.debug("Iteration: {}", iteration);
+			logger.debug("Iteration: {}", iteration);
 			for(PSOSolution particle : particules) {
-				if (logger.isDebugEnabled())
-					logger.debug("Particle: {}", particle);
 				double[] iVelocity = fitnessFunc.updateVelocity(particle.getPosition(), particle.getVelocity(), particle.getBestPosition(), gBestPosition.getPosition());
 				double[] iPosition = fitnessFunc.updatePosition(particle.getPosition(), iVelocity);
 				long[] iSolution = solutionBuilder.encodePosition(iPosition);
@@ -93,22 +90,19 @@ public class ParticleSwarmOptimization {
 				particle.setPosition(iPosition);
 				particle.setVelocity(iVelocity);
 				particle.setSolution(iSolution);
-				particle.setFitness(iFitness);
+				particle.setFitness(iFitness);				
 				if(iFitness < particle.getFitnessBestPosition()) {
 					particle.setBestPosition(iPosition);
 					particle.setFitnessBestPosition(iFitness);
-					if (logger.isDebugEnabled())
-						logger.debug("Local Best Particle updated...");
-				}
-				if (logger.isDebugEnabled())
-					logger.debug("Particle updated: {}", particle);
+					logger.debug("Local Best Particle updated ...");
+				}				
 				if(iFitness < gBestPosition.getFitness()) {
 					gBestPosition = new PSOSolution(iPosition, iVelocity);
 					gBestPosition.setSolution(iSolution);
 					gBestPosition.setFitness(iFitness);
-					if (logger.isDebugEnabled())
-						logger.debug("Global Best Particle updated: {}", gBestPosition);	
-				}						
+					logger.debug("Global Best Particle updated ...");	
+				}
+				logger.debug("Particle updated: {}", particle);
 			}
 			iteration++;
 		}
