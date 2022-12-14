@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.elements.DataSet;
@@ -12,6 +13,7 @@ import mx.com.lestradam.algorithms.elements.Edge;
 import mx.com.lestradam.algorithms.elements.Node;
 import mx.com.lestradam.algorithms.functions.basic.RoutesOperations;
 
+@Primary
 @Component("OFTotalDistance")
 public class OFTotalDistance implements ObjectiveFunction{
 	

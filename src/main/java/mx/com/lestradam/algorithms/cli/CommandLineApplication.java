@@ -9,10 +9,12 @@ import mx.com.lestradam.algorithms.abc.ArtificialBeeColony;
 import mx.com.lestradam.algorithms.elements.ABCParameters;
 import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.elements.GeneticParameters;
+import mx.com.lestradam.algorithms.elements.PSOParameters;
 import mx.com.lestradam.algorithms.elements.Solution;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
 import mx.com.lestradam.algorithms.exceptions.DataException;
 import mx.com.lestradam.algorithms.genetic.GeneticAlgorithm;
+import mx.com.lestradam.algorithms.pso.ParticleSwarmOptimization;
 
 @Component
 public class CommandLineApplication {
@@ -21,6 +23,7 @@ public class CommandLineApplication {
 	private static final String ALGO_KEY = "algorithm";
 	private static final String ALGO_VALUE_1 = "genetic";
 	private static final String ALGO_VALUE_2 = "abc";
+	private static final String ALGO_VALUE_3 = "pso";
 	private static final String SEPARATOR = ":";
 	private String[] arguments;
 	
@@ -31,6 +34,9 @@ public class CommandLineApplication {
 	private ArtificialBeeColony abc;
 	
 	@Autowired
+	private ParticleSwarmOptimization pso;
+	
+	@Autowired
 	private AlgorithmsParameters generalParams;
 	
 	@Autowired
@@ -39,32 +45,44 @@ public class CommandLineApplication {
 	@Autowired
 	private ABCParameters abcParams;
 	
+	@Autowired
+	private PSOParameters psoParams;
+	
 	public void execute(String[] arguments) {
 		this.arguments = arguments;
-		if(!checkArgumentKey(ALGO_KEY)) 
+		if (!checkArgumentKey(ALGO_KEY)) 
 			throw new DataException("Missing parameter: " + ALGO_KEY);
 		String algo = retrieveArgumentValue(ALGO_KEY);
-		if(!algo.equals(ALGO_VALUE_1) && !algo.equals(ALGO_VALUE_2))
-			throw new DataException("Invalid value for parameter: " + ALGO_KEY + ", possible values [" + ALGO_VALUE_1 + "|" + ALGO_VALUE_2 + "]");
-		else if(algo.equals(ALGO_VALUE_1)) {
+		if (algo.equals(ALGO_VALUE_1)) {
 			executeGeneticAlgorithm();
-		}else{
+		} else if(algo.equals(ALGO_VALUE_2)){
 			executeAbcAlgorithm();
+		} else if (algo.equals(ALGO_VALUE_3)) {
+			executePsoAlgorithm();
+		} else {
+			throw new DataException("Invalid value for parameter: " + ALGO_KEY + ", possible values [" + ALGO_VALUE_1 + "|" + ALGO_VALUE_2 + "|" + ALGO_VALUE_3  +"]");
 		}
+	}
+	
+	private void executePsoAlgorithm() {
+		printGeneralParameters();
+		printPsoParameters();
+		SolutionSet solutions = pso.execute();
+		printPopulation(solutions);
 	}
 	
 	private void executeAbcAlgorithm() {
 		printGeneralParameters();
 		printAbcParameters();
-		SolutionSet population = abc.execute();
-		printPopulation(population);
+		SolutionSet solutions = abc.execute();
+		printPopulation(solutions);
 	}
 	
 	private void executeGeneticAlgorithm() {
 		printGeneralParameters();
 		printGeneticParameters();
-		SolutionSet population = genetic.execute();
-		printPopulation(population);
+		SolutionSet solutions = genetic.execute();
+		printPopulation(solutions);
 	}
 	
 	private void printGeneralParameters() {
@@ -87,6 +105,15 @@ public class CommandLineApplication {
 		logger.info("IMPROVED LIMIT: {}", abcParams.getImprovedLimit());
 		logger.info("NUM. OF ITERATIONS: {}", abcParams.getNumIterations());
 		logger.info("ONLOOKERS BEES: {}", abcParams.getOnlookersBees());
+	}
+	
+	private void printPsoParameters() {
+		logger.info("PSO PARAMETERS CONFIGURATION");
+		logger.info("INERTIA {}", psoParams.getInertia());
+		logger.info("ITERATIONS {}", psoParams.getNumIterations());
+		logger.info("PARTICLES {}", psoParams.getNumParticles());
+		logger.info("ACCELERATION CONSTANT 1 {}", psoParams.getAccelerationC1());
+		logger.info("ACCELERATION CONSTANT 2 {}", psoParams.getAccelerationC2());
 	}
 	
 	private void printPopulation(SolutionSet population) {

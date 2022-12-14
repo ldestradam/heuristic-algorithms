@@ -10,6 +10,30 @@ public class BasicOperations {
 		throw new IllegalStateException("Utility class");
 	}
 	
+	public static int getMaxValueIndex(double[] array) {
+		int index = 0;
+		double max = array[0];
+		for(int i = 1; i< array.length; i++){
+			if(array[i] > max){
+				index = i;
+				max = array[i]; 
+			}
+		}
+		return index;
+	}
+	
+	public static int getMinValueIndex(double[] array) {
+		int index = 0;
+		double minimun = array[0];
+		for(int i = 1; i< array.length; i++){
+			if(array[i] < minimun){
+				index = i;
+				minimun = array[i]; 
+			}
+		}
+		return index;
+	}
+	
 	public static int getMaxValueIndex(long[] array) {
 		int index = 0;
 		long max = array[0];
