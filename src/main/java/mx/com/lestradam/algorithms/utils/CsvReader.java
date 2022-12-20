@@ -14,7 +14,7 @@ import mx.com.lestradam.algorithms.exceptions.DataException;
 
 public class CsvReader {
 	
-private CsvReader() {}
+	private CsvReader() {}
 	
 	public static List<Node> retrieveNodeFromCsv(String filePath){
 		List<Node> customers = new ArrayList<>();
