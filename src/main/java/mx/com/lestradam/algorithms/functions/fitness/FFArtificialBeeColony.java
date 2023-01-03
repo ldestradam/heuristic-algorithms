@@ -13,7 +13,8 @@ public class FFArtificialBeeColony implements FitnessFunction{
 
 	@Override
 	public long evaluateSolution(long[] solution) {
-		return objFunction.evaluate(solution);
+		long result = objFunction.evaluate(solution);
+		return result >= 0 ? 1 / (1 + result) : 1 + Math.abs(result);
 	}
 
 	@Override
