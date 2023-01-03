@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import mx.com.lestradam.algorithms.elements.Edge;
+import mx.com.lestradam.algorithms.elements.Node;
 import mx.com.lestradam.algorithms.exceptions.DataException;
 
 public class RoutesOperations {
@@ -58,6 +59,12 @@ public class RoutesOperations {
 				return i;
 		}
 		return 0;
+	}
+	
+	public static long getClientDemand(long client, List<Node> clients) {
+		Node actualClient = clients.stream().filter(c -> c.getId() == client).findFirst()
+				.orElseThrow(() -> new DataException("Client with id " + client + " not found"));
+		return actualClient.getQuantity();
 	}
 
 }
