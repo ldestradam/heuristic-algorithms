@@ -46,11 +46,13 @@ public class AppConfiguration {
 		List<Node> nodes = dataset.getNodes();
 		long totalRequest = 0;
 		long fleetCapacity = Integer.valueOf(environment.getProperty("params.fleet-capacity"));
+		long capacityPenalty = Integer.valueOf(environment.getProperty("params.capacity-penalty")); 
 		for (Node node : nodes)
 			totalRequest += node.getQuantity();
 		int totalFleets = (int)(totalRequest / fleetCapacity + (totalRequest % fleetCapacity == 0 ? 0 : 1));
 		parameters.setNumFleet( totalFleets );
 		parameters.setFleetCapacity( fleetCapacity );
+		parameters.setCapacityPenalty(capacityPenalty);
 		return parameters;
 	}
 	
