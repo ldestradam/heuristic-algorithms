@@ -6,17 +6,15 @@ import org.springframework.stereotype.Component;
 import mx.com.lestradam.algorithms.elements.Solution;
 
 @Component("FFGeneticAlgorithm")
-public class FFGeneticAlgorithm implements FitnessFunction {
+public class FFGeneticAlgorithm {
 	
 	@Autowired
 	private ObjectiveFunction objFunction;
 
-	@Override
 	public long evaluateSolution(long[] solution){
 		return objFunction.evaluate(solution);
 	}
 
-	@Override
 	public long evaluateSolutionSet(Solution[] solutions) {
 		long totalFitness = 0;
 		for(Solution individual: solutions)

@@ -5,14 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.elements.GeneticParameters;
 import mx.com.lestradam.algorithms.elements.Solution;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
 import mx.com.lestradam.algorithms.functions.builders.SolutionSetBuilder;
-import mx.com.lestradam.algorithms.functions.fitness.FitnessFunction;
+import mx.com.lestradam.algorithms.functions.fitness.FFGeneticAlgorithm;
 import mx.com.lestradam.algorithms.operators.CrossoverOperators;
 import mx.com.lestradam.algorithms.operators.NeighborhoodOperators;
 import mx.com.lestradam.algorithms.operators.SelectionOperators;
@@ -29,8 +28,7 @@ public class GeneticAlgorithm {
 	private SolutionSetBuilder solutionBuilder;
 	
 	@Autowired
-	@Qualifier("FFGeneticAlgorithm")
-	private FitnessFunction fitnessFunc;
+	private FFGeneticAlgorithm fitnessFunc;
 	
 	@Autowired
 	private CrossoverOperators crossover;
