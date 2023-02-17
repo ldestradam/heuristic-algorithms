@@ -79,28 +79,37 @@ public class CommandLineApplication {
 	private void executePsoAlgorithm() {
 		printGeneralParameters();
 		printPsoParameters();
+		long startTime = System.nanoTime();
 		SolutionSet solutions = pso.execute();
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime);
 		if (checkArgumentKey(FILE_PATH)) 
 			writeResults(solutions.getSolutions());
-		printPopulation(solutions);
+		printPopulation(solutions, duration);
 	}
 	
 	private void executeAbcAlgorithm() {
 		printGeneralParameters();
 		printAbcParameters();
+		long startTime = System.nanoTime();
 		SolutionSet solutions = abc.execute();
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime);
 		if (checkArgumentKey(FILE_PATH)) 
 			writeResults(solutions.getSolutions());
-		printPopulation(solutions);
+		printPopulation(solutions, duration);
 	}
 	
 	private void executeGeneticAlgorithm() {
 		printGeneralParameters();
 		printGeneticParameters();
+		long startTime = System.nanoTime();
 		SolutionSet solutions = genetic.execute();
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime);
 		if (checkArgumentKey(FILE_PATH)) 
 			writeResults(solutions.getSolutions());
-		printPopulation(solutions);
+		printPopulation(solutions, duration);
 	}
 	
 	private void printGeneralParameters() {
@@ -134,8 +143,9 @@ public class CommandLineApplication {
 		logger.info("ACCELERATION CONSTANT 2 {}", psoParams.getAccelerationC2());
 	}
 	
-	private void printPopulation(SolutionSet population) {
+	private void printPopulation(SolutionSet population, long duration) {
 		logger.info("FINAL RESULTS");
+		logger.info("TIME ELAPSED: {} nano seconds", duration);
 		logger.info("POPULATION FITNESS: {}", population.getFitness());
 		for(Solution individual : population.getSolutions()) {
 			logger.info("{}", individual);
