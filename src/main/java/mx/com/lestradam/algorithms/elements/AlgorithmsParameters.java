@@ -4,7 +4,7 @@ public class AlgorithmsParameters {
 	
 	private int numFleet;
 	private long fleetCapacity;
-	private long capacityPenalty;
+	private double capacityPenalty;
 	
 	public int getNumFleet() {
 		return numFleet;
@@ -22,11 +22,11 @@ public class AlgorithmsParameters {
 		this.fleetCapacity = fleetCapacity;
 	}
 
-	public long getCapacityPenalty() {
+	public double getCapacityPenalty() {
 		return capacityPenalty;
 	}
 
-	public void setCapacityPenalty(long capacityPenalty) {
+	public void setCapacityPenalty(double capacityPenalty) {
 		this.capacityPenalty = capacityPenalty;
 	}
 	

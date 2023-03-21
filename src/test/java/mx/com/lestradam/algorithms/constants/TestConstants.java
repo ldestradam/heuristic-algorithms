@@ -16,6 +16,7 @@ public class TestConstants {
 			new Node(1,"Sede 1",15),new Node(2,"Sede 2",7),new Node(3,"Sede 3",10),
 			new Node(4,"Sede 4",5),new Node(5,"Sede 5",13),new Node(0,"Depot 1",0)
 	);
+	
 	public static final List<Edge> SET1_EDGES = Arrays.asList(
 			new Edge(0,1,5), new Edge(0,2,5), new Edge(0,3,5),
 			new Edge(0,4,5), new Edge(0,5,5), new Edge(1,2,5),
