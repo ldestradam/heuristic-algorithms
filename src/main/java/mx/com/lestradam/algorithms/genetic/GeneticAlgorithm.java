@@ -15,6 +15,7 @@ import mx.com.lestradam.algorithms.functions.fitness.FFGeneticAlgorithm;
 import mx.com.lestradam.algorithms.operators.CrossoverOperators;
 import mx.com.lestradam.algorithms.operators.NeighborhoodOperators;
 import mx.com.lestradam.algorithms.operators.SelectionOperators;
+import mx.com.lestradam.algorithms.utils.LogWriter;
 
 @Component
 public class GeneticAlgorithm {
@@ -54,8 +55,7 @@ public class GeneticAlgorithm {
 		SolutionSet population = initial();
 		while(generation < params.getNumGenerations()) {
 			// Print current generation
-			if (logger.isDebugEnabled()) 
-				printCurrentGeneration(population, generation);
+			LogWriter.printCurrentIteration(population, generation);
 			// Create temporary population
 			SolutionSet tempPopulation = new SolutionSet(params.getPopulationSize());
 			//Loop over current population
@@ -96,13 +96,6 @@ public class GeneticAlgorithm {
 			population = tempPopulation;
 		}
 		return population;
-	}
-	
-	private void printCurrentGeneration(SolutionSet population, int generation) {
-		logger.debug("CURRENT GENERATION: {}", generation);
-		logger.debug("GENERATION FITNESS: {}", population.getFitness());
-		for(Solution individual : population.getSolutions())
-			logger.info("{}", individual);
 	}
 	
 }

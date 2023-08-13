@@ -14,6 +14,7 @@ import mx.com.lestradam.algorithms.functions.builders.SolutionSetBuilder;
 import mx.com.lestradam.algorithms.functions.fitness.FFArtificialBeeColony;
 import mx.com.lestradam.algorithms.functions.fitness.ObjectiveFunction;
 import mx.com.lestradam.algorithms.operators.NeighborhoodOperators;
+import mx.com.lestradam.algorithms.utils.LogWriter;
 
 @Component
 public class ArtificialBeeColony {
@@ -78,9 +79,11 @@ public class ArtificialBeeColony {
 			if (logger.isTraceEnabled()) {
 				logger.trace("EMPLOYED BEE PHASE");
 				logger.trace("Food source [{}]  limit count: {}", i, foodSourceLimits[i]);
-				logger.trace("Food source [{}] {} Obj: {} Fitness: {}", i, foodSource.getRepresentation(), foodSource.getFitness(), foodSourceFitness);
-				logger.trace("Neighbor food source [{}] {} Obj: {} Fitness: {}", i, neighbor, neighborValue, neighborFitness);
-				printFoodSources();
+				logger.trace("Food source [{}] {} Obj: {} Fitness: {}", i, foodSource.getRepresentation(),
+						foodSource.getFitness(), foodSourceFitness);
+				logger.trace("Neighbor food source [{}] {} Obj: {} Fitness: {}", i, neighbor, neighborValue,
+						neighborFitness);
+				LogWriter.printSolutions(foodSources.getSolutions());
 			}
 		}
 	}
@@ -92,7 +95,7 @@ public class ArtificialBeeColony {
 		int i = 0;
 		int t = 0;
 		while (t < foodSourceSize) {
-			double rand = Math.random(); 
+			double rand = Math.random();
 			if (logger.isTraceEnabled()) {
 				logger.trace("ONLOOKER BEE PHASE");
 				logger.trace("Rand: {}", rand);
@@ -112,16 +115,18 @@ public class ArtificialBeeColony {
 					foodSourceLimits[i] = 0;
 					Solution newNeighbor = new Solution(neighbor, neighborValue);
 					foodSources.setSolution(i, newNeighbor);
-					
+
 				} else {
 					foodSourceLimits[i] = foodSourceLimits[i] + 1;
 				}
 				if (logger.isTraceEnabled()) {
 					logger.trace("ONLOOKER BEE PHASE");
 					logger.trace("Food source [{}]  limit count: {}", i, foodSourceLimits[i]);
-					logger.trace("Food source [{}] {} Obj: {} Fitness: {}", i, foodSource.getRepresentation(), foodSource.getFitness(), foodSourceFitness);
-					logger.trace("Neighbor food source [{}] {} Obj: {} Fitness: {}", i, neighbor, neighborValue, neighborFitness);
-					printFoodSources();
+					logger.trace("Food source [{}] {} Obj: {} Fitness: {}", i, foodSource.getRepresentation(),
+							foodSource.getFitness(), foodSourceFitness);
+					logger.trace("Neighbor food source [{}] {} Obj: {} Fitness: {}", i, neighbor, neighborValue,
+							neighborFitness);
+					LogWriter.printSolutions(foodSources.getSolutions());
 				}
 			}
 			i += 1;
@@ -143,7 +148,7 @@ public class ArtificialBeeColony {
 					logger.trace("SCOUT BEE PHASE");
 					logger.trace("Food source [{}] limit count reset", i);
 					logger.trace("New food source [{}] {}", i, newFoodSource);
-					printFoodSources();
+					LogWriter.printSolutions(foodSources.getSolutions());
 				}
 			}
 		}
@@ -153,26 +158,13 @@ public class ArtificialBeeColony {
 		initial();
 		int iteration = 0;
 		while (iteration < params.getNumIterations()) {
-			if (logger.isDebugEnabled())
-				printCurrentIteration(iteration);
+			LogWriter.printCurrentIteration(foodSources, iteration);
 			sendEmployedBees();
 			sendOnlooker();
 			sendScoutBees();
 			iteration++;
 		}
 		return foodSources;
-	}
-
-	private void printCurrentIteration(int iteration) {
-		logger.debug("CURRENT ITERATION: {}", iteration);
-		logger.debug("ITERATION FITNESS: {}", foodSources.getFitness());
-		printFoodSources();
-	}
-	
-	private void printFoodSources() {
-		logger.debug("FOOD SOURCES");
-		for (int i = 0; i < foodSources.getSolutions().length; i++)
-			logger.debug("[{}] {}", i, foodSources.getSolution(i));
 	}
 
 }
