@@ -1,4 +1,4 @@
-package mx.com.lestradam.algorithms.functions;
+package mx.com.lestradam.algorithms.functions.builders;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
