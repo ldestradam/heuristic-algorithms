@@ -37,7 +37,6 @@ public class OFTotalDistanceAndCapacityConstraint implements ObjectiveFunction {
 		depot = dataset.getDepot();
 	}
 
-
 	@Override
 	public long evaluate(long[] solution) {
 		long cost = 0;
@@ -49,20 +48,11 @@ public class OFTotalDistanceAndCapacityConstraint implements ObjectiveFunction {
 	}
 	
 	private double penalty(long[] route) {
-		long actualCapacity = 0;
-		long overcapacity = 0;
 		long capacity = params.getFleetCapacity();
-		double penalty = params.getCapacityPenalty();
-		for (int i = 0; i < route.length; i++) {
-			long clientDemand = RoutesOperations.getClientDemand(route[i], dataset.getNodes());
-			actualCapacity += clientDemand;
-			if (actualCapacity > capacity) {
-				overcapacity += clientDemand;
-			}
-		}
-		double totalPenalty = overcapacity * penalty; 
-		logger.trace("Overcapacity: {} Total penalty: {} Route :{}", overcapacity, totalPenalty, route);
-		return totalPenalty;
+		long overcapacity = RoutesOperations.getRouteOverCap(route, dataset.getNodes(), capacity);
+		double penalty = overcapacity * params.getCapacityPenalty(); 
+		logger.trace("Overcapacity: {} Penalty: {} Route :{}", overcapacity, penalty, route);
+		return penalty;
 	}
 
 }
