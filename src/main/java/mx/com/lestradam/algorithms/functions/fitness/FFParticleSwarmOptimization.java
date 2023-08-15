@@ -40,19 +40,18 @@ public class FFParticleSwarmOptimization {
 	
 	public double[] updateVelocity(double[] position, double[] velocity, double[] pBest, double[] gBest) {
 		logger.trace("Updating velocity ...");
-		int w = psoParameters.getInertia();
-		int c1 = psoParameters.getAccelerationC1();
-		int c2 = psoParameters.getAccelerationC2();
+		float w = psoParameters.getInertia();
+		float c1 = psoParameters.getAccelerationC1();
+		float c2 = psoParameters.getAccelerationC2();
 		double rand1 = Math.random();
 		double rand2 = Math.random();
 		double pBestUpdate;
 		double gBestUpdate;
-		double[] velocityUpdate = new double[velocity.length];
-		for(int i = 0; i < velocityUpdate.length; i++) {
-			velocityUpdate[i] = velocity[i] * w; 
+		double[] velocityUpdated = new double[velocity.length];
+		for(int i = 0; i < velocityUpdated.length; i++) {
 			pBestUpdate = (pBest[i] - position[i]) * c1 * rand1;
 			gBestUpdate = (gBest[i] - position[i]) * c2 * rand2;
-			velocityUpdate[i] = (w * velocity[i]) + pBestUpdate + gBestUpdate;
+			velocityUpdated[i] = (w * velocity[i]) + pBestUpdate + gBestUpdate;
 		}
 		if (logger.isTraceEnabled()) {
 			logger.trace("W[{}]", w);
@@ -60,9 +59,9 @@ public class FFParticleSwarmOptimization {
 			logger.trace("Rand1[{}] Rand1[{}]", rand1, rand2);
 			logger.trace("Position: {}", Arrays.toString(position));
 			logger.trace("Velocity: {}", Arrays.toString(velocity));
-			logger.trace("New velocity: {}", Arrays.toString(velocityUpdate));
+			logger.trace("New velocity: {}", Arrays.toString(velocityUpdated));
 		}
-		return velocityUpdate;
+		return velocityUpdated;
 	}
 
 	

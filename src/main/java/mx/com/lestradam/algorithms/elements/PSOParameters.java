@@ -4,9 +4,9 @@ public class PSOParameters {
 	
 	private int numParticles;
 	private int numIterations;
-	private int inertia;
-	private int accelerationC1;
-	private int accelerationC2;
+	private float inertia;
+	private float accelerationC1;
+	private float accelerationC2;
 	
 	public int getNumParticles() {
 		return numParticles;
@@ -24,27 +24,27 @@ public class PSOParameters {
 		this.numIterations = numIterations;
 	}
 	
-	public int getInertia() {
+	public float getInertia() {
 		return inertia;
 	}
 	
-	public void setInertia(int inertia) {
+	public void setInertia(float inertia) {
 		this.inertia = inertia;
 	}
 	
-	public int getAccelerationC1() {
+	public float getAccelerationC1() {
 		return accelerationC1;
 	}
 	
-	public void setAccelerationC1(int accelerationC1) {
+	public void setAccelerationC1(float accelerationC1) {
 		this.accelerationC1 = accelerationC1;
 	}
 	
-	public int getAccelerationC2() {
+	public float getAccelerationC2() {
 		return accelerationC2;
 	}
 	
-	public void setAccelerationC2(int accelerationC2) {
+	public void setAccelerationC2(float accelerationC2) {
 		this.accelerationC2 = accelerationC2;
 	}
 

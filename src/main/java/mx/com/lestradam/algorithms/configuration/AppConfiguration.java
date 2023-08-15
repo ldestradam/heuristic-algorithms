@@ -30,12 +30,11 @@ public class AppConfiguration {
     }
 	
 	@Bean
-	GeneticParameters geneticParameters(Environment environment) {		
-		GeneticParameters parameters = new GeneticParameters();		
-		parameters.setElitismCount( Integer.valueOf(environment.getProperty("params.genetic.elitism-count")) );
+	GeneticParameters geneticParameters(Environment environment) {
+		GeneticParameters parameters = new GeneticParameters();
 		parameters.setMutationRate( Double.valueOf(environment.getProperty("params.genetic.mutation-rate")) );
 		parameters.setCrossoverRate( Double.valueOf(environment.getProperty("params.genetic.crossover-rate")) );
-		parameters.setNumGenerations( Integer.valueOf(environment.getProperty("params.genetic.num-generations")) );		
+		parameters.setNumGenerations( Integer.valueOf(environment.getProperty("params.genetic.num-generations")) );
 		parameters.setPopulationSize( Integer.valueOf(environment.getProperty("params.genetic.population-size")) );
 		return parameters;
 	}
