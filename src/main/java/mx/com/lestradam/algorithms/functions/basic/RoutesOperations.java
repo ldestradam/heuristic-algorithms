@@ -75,5 +75,14 @@ public class RoutesOperations {
 		}
 		return (actualCapacity > capacity) ?  actualCapacity - capacity : 0;
 	}
+	
+	public static long getSolutionOverCap(long[] solution, List<Node> clients, long capacity, long depot) {
+		long overCap = 0;
+		List<long[]> routes = splitIntoRoute(solution, depot);
+		for (long[] route : routes) {
+			overCap += getRouteOverCap(route, clients, capacity);
+		}
+		return overCap;
+	}
 
 }

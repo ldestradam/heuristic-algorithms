@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import mx.com.lestradam.algorithms.constants.TestConstants;
 import mx.com.lestradam.algorithms.exceptions.DataException;
-import mx.com.lestradam.algorithms.functions.basic.RoutesOperations;
 
 class RoutesOperationsTest {
 
@@ -64,12 +63,40 @@ class RoutesOperationsTest {
 		long demand = RoutesOperations.getClientDemand(2, TestConstants.SET2_NODES);
 		assertEquals(23, demand);
 	}
-	
+
 	@Test
 	void testGetClientDemandDataException() {
 		Exception exception = assertThrows(DataException.class, () -> {
 			RoutesOperations.getClientDemand(-1, TestConstants.SET2_NODES);
 		});
 		assertEquals(DataException.class, exception.getClass());
+	}
+
+	@Test
+	void testGetRouteOverCap() {
+		long[] route = new long[] { 0, 1, 2, 0 };
+		long overcap = RoutesOperations.getRouteOverCap(route, TestConstants.SET2_NODES, 40);
+		assertEquals(0, overcap);
+	}
+	
+	@Test
+	void testGetRouteOverCapCompl() {
+		long[] route = new long[] { 0, 1, 2, 0 };
+		long overcap = RoutesOperations.getRouteOverCap(route, TestConstants.SET2_NODES, 35);
+		assertEquals(3, overcap);
+	}
+	
+	@Test
+	void testGetSolutionOverCap() {
+		long[] solution = new long[] { 0, 1, 2, 0, 4, 5 };
+		long overcap = RoutesOperations.getSolutionOverCap(solution, TestConstants.SET2_NODES, 40, 0);
+		assertEquals(0, overcap);
+	}
+	
+	@Test
+	void testGetSolutionOverCapCompl() {
+		long[] solution = new long[] { 0, 1, 2, 0, 3, 4 };
+		long overcap = RoutesOperations.getSolutionOverCap(solution, TestConstants.SET2_NODES, 35, 0);
+		assertEquals(17, overcap);
 	}
 }
