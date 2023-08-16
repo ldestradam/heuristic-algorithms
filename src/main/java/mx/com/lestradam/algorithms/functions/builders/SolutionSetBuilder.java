@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class SolutionSetBuilder {
 	
 	@Autowired
-	@Qualifier("SBCostMinimization")
+	@Qualifier("RandomizedGreedy")
 	private SolutionBuilder solutionBuilder;
 	
 	/**

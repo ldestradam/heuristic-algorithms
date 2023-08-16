@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import mx.com.lestradam.algorithms.elements.Edge;
 import mx.com.lestradam.algorithms.elements.Node;
 import mx.com.lestradam.algorithms.exceptions.DataException;
@@ -73,9 +75,9 @@ public class RoutesOperations {
 		for (int i = 0; i < route.length; i++) {
 			actualCapacity += getClientDemand(route[i], clients);
 		}
-		return (actualCapacity > capacity) ?  actualCapacity - capacity : 0;
+		return (actualCapacity > capacity) ? actualCapacity - capacity : 0;
 	}
-	
+
 	public static long getSolutionOverCap(long[] solution, List<Node> clients, long capacity, long depot) {
 		long overCap = 0;
 		List<long[]> routes = splitIntoRoute(solution, depot);
@@ -83,6 +85,13 @@ public class RoutesOperations {
 			overCap += getRouteOverCap(route, clients, capacity);
 		}
 		return overCap;
+	}
+
+	public static long[] generateSolutionFromRoutes(final List<long[]> routes) {
+		long[] solution = {};
+		for (long[] routeAux : routes)
+			solution = ArrayUtils.addAll(solution, routeAux);
+		return solution;
 	}
 
 }

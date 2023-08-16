@@ -3,6 +3,7 @@ package mx.com.lestradam.algorithms.functions.basic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -78,25 +79,36 @@ class RoutesOperationsTest {
 		long overcap = RoutesOperations.getRouteOverCap(route, TestConstants.SET2_NODES, 40);
 		assertEquals(0, overcap);
 	}
-	
+
 	@Test
 	void testGetRouteOverCapCompl() {
 		long[] route = new long[] { 0, 1, 2, 0 };
 		long overcap = RoutesOperations.getRouteOverCap(route, TestConstants.SET2_NODES, 35);
 		assertEquals(3, overcap);
 	}
-	
+
 	@Test
 	void testGetSolutionOverCap() {
 		long[] solution = new long[] { 0, 1, 2, 0, 4, 5 };
 		long overcap = RoutesOperations.getSolutionOverCap(solution, TestConstants.SET2_NODES, 40, 0);
 		assertEquals(0, overcap);
 	}
-	
+
 	@Test
 	void testGetSolutionOverCapCompl() {
 		long[] solution = new long[] { 0, 1, 2, 0, 3, 4 };
 		long overcap = RoutesOperations.getSolutionOverCap(solution, TestConstants.SET2_NODES, 35, 0);
 		assertEquals(17, overcap);
+	}
+
+	@Test
+	void testGenerateSolutionFromRoutes() {
+		List<long[]> routes = new ArrayList<>();
+		routes.add(new long[] { 1, 2, 3 });
+		routes.add(new long[] { 4, 5, 6, 7 });
+		long[] solution = RoutesOperations.generateSolutionFromRoutes(routes);
+		assertEquals(7, solution.length);
+		assertEquals(1, solution[0]);
+		assertEquals(7, solution[6]);
 	}
 }

@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import mx.com.lestradam.algorithms.functions.basic.BasicOperations;
-
 class BasicOperationsTest {
 
 	@Test
@@ -45,6 +43,14 @@ class BasicOperationsTest {
 		int bound = 10;
 		int actualPoint = BasicOperations.getRandomlyPoint(bound);
 		assertTrue(actualPoint < 10 && actualPoint >= 0);
+	}
+	
+	@Test
+	void testGetNthMinValueIndex() {
+		long[] unOrderedArray = new long[] {2,3,1,4,5};
+		int nElement = 0;
+		int nthMin = BasicOperations.getNthMinValueIndex(unOrderedArray, nElement);
+		assertEquals(2, nthMin);
 	}
 
 }
