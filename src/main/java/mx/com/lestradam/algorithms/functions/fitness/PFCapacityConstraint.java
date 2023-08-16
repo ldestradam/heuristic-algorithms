@@ -5,12 +5,14 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.elements.DataSet;
 import mx.com.lestradam.algorithms.functions.basic.RoutesOperations;
 
+@Primary
 @Component("CapacityConstraint")
 public class PFCapacityConstraint implements PenaltyFunction {
 

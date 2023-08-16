@@ -15,8 +15,15 @@ public class FFArtificialBeeColony {
 	@Autowired
 	private ObjectiveFunction objFunction;
 	
+	@Autowired
+	private PenaltyFunction penalty;
+	
 	public double evaluateSolution(long[] solution) {
 		return objFunction.evaluate(solution);
+	}
+	
+	public double excess(long[] solution) {
+		return penalty.excess(solution);
 	}
 	
 	public double[] calculateProbabilities(Solution[] foodSources) {

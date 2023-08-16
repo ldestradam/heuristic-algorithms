@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,6 @@ public class OFTotalDistanceAndCapacityConstraint implements ObjectiveFunction {
 	private DataSet dataset;
 	
 	@Autowired
-	@Qualifier("CapacityConstraint")
 	private PenaltyFunction penalty;
 	
 	@Override

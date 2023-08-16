@@ -10,6 +10,14 @@ public class FFGeneticAlgorithm {
 	
 	@Autowired
 	private ObjectiveFunction objFunction;
+	
+	@Autowired
+	private PenaltyFunction penalty;
+	
+	public double excess(long[] solution) {
+		return penalty.excess(solution);
+	}
+	
 
 	public double evaluateSolution(long[] solution){
 		return objFunction.evaluate(solution);

@@ -19,9 +19,16 @@ public class FFParticleSwarmOptimization {
 	
 	@Autowired
 	private ObjectiveFunction objFunction;
+	
+	@Autowired
+	private PenaltyFunction penalty;
 
 	public double evaluateSolution(long[] solution) {
 		return objFunction.evaluate(solution);
+	}
+	
+	public double excess(long[] solution) {
+		return penalty.excess(solution);
 	}
 	
 	public double[] updatePosition(double[] position, double[] velocity) {
