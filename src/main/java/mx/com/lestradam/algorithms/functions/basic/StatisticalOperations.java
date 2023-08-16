@@ -6,7 +6,7 @@ public class StatisticalOperations {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static double getAvgValue(long[] values) {
+	public static double getAvgValue(double[] values) {
 		long sum = 0;
 		for(int i = 0; i < values.length; i++) {
 			sum += values[i];

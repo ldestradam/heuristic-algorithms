@@ -28,8 +28,8 @@ public class OFTotalDistance implements ObjectiveFunction{
 	}
 
 	@Override
-	public long evaluate(long[] solution) {
-		long cost = 0;
+	public double evaluate(long[] solution) {
+		double cost = 0;
 		List<long[]> routes = RoutesOperations.splitIntoRoute(solution, depot.getId());
 		for(long[] route: routes)
 			cost += RoutesOperations.getDistanceRoute(route, edges);

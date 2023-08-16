@@ -8,8 +8,8 @@ public class PSOSolution {
 	private double[] velocity;
 	private double[] bestPosition;
 	private long[] solution;
-	private long fitnessBestPosition;
-	private long fitness;
+	private double fitnessBestPosition;
+	private double fitness;
 	
 	public PSOSolution( double[] position, double[] velocity) {
 		this.position = position;
@@ -40,19 +40,19 @@ public class PSOSolution {
 		this.bestPosition = bestPosition;
 	}
 
-	public long getFitnessBestPosition() {
+	public double getFitnessBestPosition() {
 		return fitnessBestPosition;
 	}
 
-	public void setFitnessBestPosition(long fitnessBestPosition) {
+	public void setFitnessBestPosition(double fitnessBestPosition) {
 		this.fitnessBestPosition = fitnessBestPosition;
 	}
 
-	public long getFitness() {
+	public double getFitness() {
 		return fitness;
 	}
 
-	public void setFitness(long fitness) {
+	public void setFitness(double fitness) {
 		this.fitness = fitness;
 	}
 

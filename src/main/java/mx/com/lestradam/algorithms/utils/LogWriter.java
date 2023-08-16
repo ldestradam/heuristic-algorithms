@@ -22,7 +22,7 @@ public class LogWriter {
 
 	public static void printCurrentIteration(final SolutionSet population, final int generation) {
 		Solution[] individuals = population.getSolutions();
-		long[] fitness = new long[individuals.length];
+		double[] fitness = new double[individuals.length];
 		for (int i = 0; i < individuals.length; i++)
 			fitness[i] = individuals[i].getFitness();
 		int indMax = BasicOperations.getMaxValueIndex(fitness);

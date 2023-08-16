@@ -41,7 +41,7 @@ public class ParticleSwarmOptimization {
 			double[] position = solutionBuilder.generateRandomArrayNumbers();
 			double[] velocity = solutionBuilder.generateRandomArrayNumbers();
 			long[] solution = solutionBuilder.encodePosition(position);
-			long fitness = fitnessFunc.evaluateSolution(solution);
+			double fitness = fitnessFunc.evaluateSolution(solution);
 			PSOSolution particle = new PSOSolution(position, velocity);
 			particle.setSolution(solution);
 			particle.setBestPosition(position);
@@ -49,7 +49,7 @@ public class ParticleSwarmOptimization {
 			particle.setFitnessBestPosition(fitness);
 			particules.add(particle);
 		}
-		long minCost = particules.get(0).getFitness();
+		double minCost = particules.get(0).getFitness();
 		int minParticleIndex = 0;
 		for (int i = 0; i < numParticules; i++) {
 			if (particules.get(i).getFitness() < minCost) {
@@ -88,7 +88,7 @@ public class ParticleSwarmOptimization {
 						particle.getBestPosition(), gBestPosition.getPosition());
 				double[] iPosition = fitnessFunc.updatePosition(particle.getPosition(), iVelocity);
 				long[] iSolution = solutionBuilder.encodePosition(iPosition);
-				long iFitness = fitnessFunc.evaluateSolution(iSolution);
+				double iFitness = fitnessFunc.evaluateSolution(iSolution);
 				particle.setPosition(iPosition);
 				particle.setVelocity(iVelocity);
 				particle.setSolution(iSolution);

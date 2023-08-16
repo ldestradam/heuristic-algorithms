@@ -12,7 +12,6 @@ import mx.com.lestradam.algorithms.elements.Solution;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
 import mx.com.lestradam.algorithms.functions.builders.SolutionSetBuilder;
 import mx.com.lestradam.algorithms.functions.fitness.FFArtificialBeeColony;
-import mx.com.lestradam.algorithms.functions.fitness.ObjectiveFunction;
 import mx.com.lestradam.algorithms.operators.NeighborhoodOperators;
 import mx.com.lestradam.algorithms.utils.LogWriter;
 
@@ -29,9 +28,6 @@ public class ArtificialBeeColony {
 
 	@Autowired
 	private NeighborhoodOperators neighborhood;
-
-	@Autowired
-	private ObjectiveFunction objFunction;
 
 	@Autowired
 	private FFArtificialBeeColony fitnessFunctions;
@@ -51,7 +47,7 @@ public class ArtificialBeeColony {
 		List<long[]> tempSolutions = solutionBuilder.init(foodSourceSize);
 		Solution[] actualSolutions = new Solution[foodSourceSize];
 		for (int i = 0; i < foodSourceSize; i++) {
-			long objValue = objFunction.evaluate(tempSolutions.get(i));
+			double objValue = fitnessFunctions.evaluateSolution(tempSolutions.get(i));
 			totalobjValue += objValue;
 			actualSolutions[i] = new Solution(tempSolutions.get(i), objValue);
 		}
@@ -67,7 +63,7 @@ public class ArtificialBeeColony {
 			// (neighborhood operator).
 			long[] neighbor = neighborhood.randomSwaps(foodSource.getRepresentation());
 			// Apply greedy selection on the two food sources.
-			long neighborValue = objFunction.evaluate(neighbor);
+			double neighborValue = fitnessFunctions.evaluateSolution(neighbor);
 			double foodSourceFitness = fitnessFunctions.evaluateSolutionFitness(foodSource.getFitness());
 			double neighborFitness = fitnessFunctions.evaluateSolutionFitness(neighborValue);
 			if (foodSourceFitness < neighborFitness) {
@@ -98,7 +94,7 @@ public class ArtificialBeeColony {
 					Solution foodSource = foodSources.getSolution(j);
 					// Find a new food source in the neighborhood, and evaluate the fitness
 					long[] neighbor = neighborhood.randomSwaps(foodSource.getRepresentation());
-					long neighborValue = objFunction.evaluate(neighbor);
+					double neighborValue = fitnessFunctions.evaluateSolution(neighbor);
 					double neighborFitness = fitnessFunctions.evaluateSolutionFitness(neighborValue);
 					double foodSourceFitness = fitnessFunctions.evaluateSolutionFitness(foodSource.getFitness());
 					// Apply greedy selection on the two food sources.
@@ -127,7 +123,7 @@ public class ArtificialBeeColony {
 			// Send the scout bee to a randomly produced food source
 			if (foodSourceLimits[i] >= params.getImprovedLimit()) {
 				long[] solution = solutionBuilder.createSolution();
-				long fitness = objFunction.evaluate(solution);
+				double fitness = fitnessFunctions.evaluateSolution(solution);
 				Solution newFoodSource = new Solution(solution, fitness);
 				foodSources.setSolution(i, newFoodSource);
 				foodSourceLimits[i] = 0;

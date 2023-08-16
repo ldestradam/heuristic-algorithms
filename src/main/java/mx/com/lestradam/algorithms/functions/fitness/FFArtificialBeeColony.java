@@ -2,6 +2,7 @@ package mx.com.lestradam.algorithms.functions.fitness;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.elements.Solution;
@@ -9,7 +10,14 @@ import mx.com.lestradam.algorithms.elements.Solution;
 @Component("FFArtificialBeeColony")
 public class FFArtificialBeeColony {
 	
-	private static Logger logger = LoggerFactory.getLogger(FFArtificialBeeColony.class); 
+	private static Logger logger = LoggerFactory.getLogger(FFArtificialBeeColony.class);
+	
+	@Autowired
+	private ObjectiveFunction objFunction;
+	
+	public double evaluateSolution(long[] solution) {
+		return objFunction.evaluate(solution);
+	}
 	
 	public double[] calculateProbabilities(Solution[] foodSources) {
 		// Calculate the probability for each food source
@@ -31,7 +39,7 @@ public class FFArtificialBeeColony {
 		return probabilities;
 	}
 	
-	public double evaluateSolutionFitness(long fitness) {
+	public double evaluateSolutionFitness(double fitness) {
 		return (fitness >= 0) ? (1.0 / (1 + fitness)) : (1.0 + Math.abs(fitness));
 	}
 

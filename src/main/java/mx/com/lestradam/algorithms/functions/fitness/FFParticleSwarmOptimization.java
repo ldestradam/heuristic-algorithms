@@ -20,7 +20,7 @@ public class FFParticleSwarmOptimization {
 	@Autowired
 	private ObjectiveFunction objFunction;
 
-	public long evaluateSolution(long[] solution) {
+	public double evaluateSolution(long[] solution) {
 		return objFunction.evaluate(solution);
 	}
 	

@@ -39,14 +39,13 @@ class OFTotalDistanceAndCapacityConstraintTest {
 		when(dataset.getNodes()).thenReturn(TestConstants.SET1_NODES);
 		when(params.getFleetCapacity()).thenReturn(FLEET_CAPACITY);
 		when(params.getCapacityPenalty()).thenReturn(PENALTY);
-		objectiveFunction.init();
 	}
 
 	@Test
 	void evaluateSolutionWithPenaltyTest() {
 		long[] solution = {0,1,2,0,3,4,0,5};
 		long expectedObjValue = 43;
-		long actualObjValue = objectiveFunction.evaluate(solution);
+		double actualObjValue = objectiveFunction.evaluate(solution);
 		assertEquals(expectedObjValue, actualObjValue);
 	}
 	
@@ -54,7 +53,7 @@ class OFTotalDistanceAndCapacityConstraintTest {
 	void evaluateSolutionTest() {
 		long[] solution = {0,1,0,3,4,0,5};
 		long expectedObjValue = 35;
-		long actualObjValue = objectiveFunction.evaluate(solution);
+		double actualObjValue = objectiveFunction.evaluate(solution);
 		assertEquals(expectedObjValue, actualObjValue);
 	}
 

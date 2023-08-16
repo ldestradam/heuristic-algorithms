@@ -5,22 +5,32 @@ import java.util.Arrays;
 public class Solution{
 	
 	private long[] representation;
-	private long fitness = -1;
+	private double fitness;
+	private long overcap;
 	
-	public Solution(long[] representation, long fitness) {
+	public Solution(long[] representation, double fitness) {
 		this.representation = representation;
 		this.fitness = fitness;
+		this.overcap = 0;
 	}
 
 	public Solution(long[] representation) {
 		this.representation = representation;
+		this.fitness = -1;
+		this.overcap = 0;
 	}
 
-	public long getFitness() {
+	public Solution(long[] representation, double fitness, long overcap) {
+		this.representation = representation;
+		this.fitness = fitness;
+		this.overcap = overcap;
+	}
+
+	public double getFitness() {
 		return fitness;
 	}
 
-	public void setFitness(long fitness) {
+	public void setFitness(double fitness) {
 		this.fitness = fitness;
 	}
 	
@@ -32,9 +42,18 @@ public class Solution{
 		this.representation = representation;
 	}
 
+	public long getOvercap() {
+		return overcap;
+	}
+
+	public void setOvercap(long overcap) {
+		this.overcap = overcap;
+	}
+
 	@Override
 	public String toString() {
-		return "Individual [representation=" + Arrays.toString(representation) + ", fitness=" + fitness + "]";
+		return "Solution [representation=" + Arrays.toString(representation) + ", fitness=" + fitness + ", overcap="
+				+ overcap + "]";
 	}
 
 }
