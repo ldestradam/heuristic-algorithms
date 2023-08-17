@@ -7,12 +7,6 @@ public class Solution{
 	private long[] representation;
 	private double fitness;
 	private long overcap;
-	
-	public Solution(long[] representation, double fitness) {
-		this.representation = representation;
-		this.fitness = fitness;
-		this.overcap = 0;
-	}
 
 	public Solution(long[] representation) {
 		this.representation = representation;

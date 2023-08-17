@@ -22,7 +22,7 @@ public class FFArtificialBeeColony {
 		return objFunction.evaluate(solution);
 	}
 	
-	public double excess(long[] solution) {
+	public long excess(long[] solution) {
 		return penalty.excess(solution);
 	}
 	

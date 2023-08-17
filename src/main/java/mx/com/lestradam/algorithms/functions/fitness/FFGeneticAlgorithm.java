@@ -14,7 +14,7 @@ public class FFGeneticAlgorithm {
 	@Autowired
 	private PenaltyFunction penalty;
 	
-	public double excess(long[] solution) {
+	public long excess(long[] solution) {
 		return penalty.excess(solution);
 	}
 	

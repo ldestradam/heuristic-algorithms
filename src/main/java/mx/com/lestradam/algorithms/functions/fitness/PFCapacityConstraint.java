@@ -35,7 +35,7 @@ public class PFCapacityConstraint implements PenaltyFunction {
 	}
 
 	@Override
-	public double excess(long[] solution) {
+	public long excess(long[] solution) {
 		return RoutesOperations.getSolutionOverCap(solution, dataset.getNodes(), params.getFleetCapacity(),
 				dataset.getDepot().getId());
 	}

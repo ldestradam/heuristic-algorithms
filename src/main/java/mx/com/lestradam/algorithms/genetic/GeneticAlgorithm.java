@@ -45,7 +45,8 @@ public class GeneticAlgorithm {
 		for (int i = 0; i < params.getPopulationSize(); i++) {
 			double fitness = fitnessFunc.evaluateSolution(tempSolutions.get(i));
 			totalFitness += fitness;
-			actualSolutions[i] = new Solution(tempSolutions.get(i), fitness);
+			long excess = fitnessFunc.excess(tempSolutions.get(i));
+			actualSolutions[i] = new Solution(tempSolutions.get(i), fitness, excess);
 		}
 		return new SolutionSet(actualSolutions, totalFitness);
 	}
@@ -81,8 +82,10 @@ public class GeneticAlgorithm {
 					// Add offsprings to new population
 					Solution offspring1 = new Solution(chromosome1);
 					offspring1.setFitness(fitnessFunc.evaluateSolution(chromosome1));
+					offspring1.setOvercap(fitnessFunc.excess(chromosome1));
 					Solution offspring2 = new Solution(chromosome2);
 					offspring2.setFitness(fitnessFunc.evaluateSolution(offspring2.getRepresentation()));
+					offspring2.setOvercap(fitnessFunc.excess(chromosome2));
 					tempPopulation.setSolution(i, offspring1);
 					tempPopulation.setSolution(i + 1, offspring2);
 				} else {

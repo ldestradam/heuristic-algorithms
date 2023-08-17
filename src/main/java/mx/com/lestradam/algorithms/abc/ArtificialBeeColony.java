@@ -48,8 +48,9 @@ public class ArtificialBeeColony {
 		Solution[] actualSolutions = new Solution[foodSourceSize];
 		for (int i = 0; i < foodSourceSize; i++) {
 			double objValue = fitnessFunctions.evaluateSolution(tempSolutions.get(i));
+			long excess = fitnessFunctions.excess(tempSolutions.get(i));
 			totalobjValue += objValue;
-			actualSolutions[i] = new Solution(tempSolutions.get(i), objValue);
+			actualSolutions[i] = new Solution(tempSolutions.get(i), objValue, excess);
 		}
 		foodSources = new SolutionSet(actualSolutions, totalobjValue);
 	}
@@ -67,7 +68,8 @@ public class ArtificialBeeColony {
 			double foodSourceFitness = fitnessFunctions.evaluateSolutionFitness(foodSource.getFitness());
 			double neighborFitness = fitnessFunctions.evaluateSolutionFitness(neighborValue);
 			if (foodSourceFitness < neighborFitness) {
-				Solution newNeighbor = new Solution(neighbor, neighborValue);
+				long excess = fitnessFunctions.excess(neighbor);
+				Solution newNeighbor = new Solution(neighbor, neighborValue, excess);
 				foodSources.setSolution(i, newNeighbor);
 				foodSourceLimits[i] = 0;
 			} else {
@@ -100,7 +102,8 @@ public class ArtificialBeeColony {
 					// Apply greedy selection on the two food sources.
 					if (foodSourceFitness < neighborFitness) {
 						foodSourceLimits[j] = 0;
-						Solution newNeighbor = new Solution(neighbor, neighborValue);
+						long excess = fitnessFunctions.excess(neighbor);
+						Solution newNeighbor = new Solution(neighbor, neighborValue, excess);
 						foodSources.setSolution(j, newNeighbor);
 					} else {
 						foodSourceLimits[j] = foodSourceLimits[j] + 1;
@@ -124,7 +127,8 @@ public class ArtificialBeeColony {
 			if (foodSourceLimits[i] >= params.getImprovedLimit()) {
 				long[] solution = solutionBuilder.createSolution();
 				double fitness = fitnessFunctions.evaluateSolution(solution);
-				Solution newFoodSource = new Solution(solution, fitness);
+				long excess = fitnessFunctions.excess(solution);
+				Solution newFoodSource = new Solution(solution, fitness, excess);
 				foodSources.setSolution(i, newFoodSource);
 				foodSourceLimits[i] = 0;
 				logger.trace("Food source [{}] limit count reset", i);
