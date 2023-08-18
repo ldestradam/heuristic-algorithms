@@ -69,9 +69,9 @@ public class AppConfiguration {
 	PSOParameters psoParameters(Environment environment) {
 		PSOParameters parameters = new PSOParameters();		
 		parameters.setNumIterations(Integer.valueOf(environment.getProperty("params.pso.num-iterations")));
-		parameters.setAccelerationC1(Integer.valueOf(environment.getProperty("params.pso.acceleration-c1")));
-		parameters.setAccelerationC2(Integer.valueOf(environment.getProperty("params.pso.acceleration-c2")));
-		parameters.setInertia(Integer.valueOf(environment.getProperty("params.pso.inertia")));
+		parameters.setAccelerationC1(Float.valueOf(environment.getProperty("params.pso.acceleration-c1")));
+		parameters.setAccelerationC2(Float.valueOf(environment.getProperty("params.pso.acceleration-c2")));
+		parameters.setInertia(Float.valueOf(environment.getProperty("params.pso.inertia")));
 		parameters.setNumParticles(Integer.valueOf(environment.getProperty("params.pso.particles")));
 		return parameters; 
 	}
