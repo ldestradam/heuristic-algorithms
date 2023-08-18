@@ -1,5 +1,6 @@
 package mx.com.lestradam.algorithms.genetic;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 import mx.com.lestradam.algorithms.elements.GeneticParameters;
 import mx.com.lestradam.algorithms.elements.Solution;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
-import mx.com.lestradam.algorithms.functions.basic.RoutesOperations;
 import mx.com.lestradam.algorithms.functions.builders.SolutionSetBuilder;
 import mx.com.lestradam.algorithms.functions.fitness.FFGeneticAlgorithm;
 import mx.com.lestradam.algorithms.operators.CrossoverOperators;
@@ -39,14 +39,17 @@ public class GeneticAlgorithm {
 	private NeighborhoodOperators neighborhood;
 
 	public SolutionSet initial() {
+		logger.debug("Creating initial population...");
 		List<long[]> tempSolutions = solutionBuilder.init(params.getPopulationSize());
 		Solution[] actualSolutions = new Solution[params.getPopulationSize()];
 		long totalFitness = 0;
 		for (int i = 0; i < params.getPopulationSize(); i++) {
 			double fitness = fitnessFunc.evaluateSolution(tempSolutions.get(i));
-			totalFitness += fitness;
 			long excess = fitnessFunc.excess(tempSolutions.get(i));
 			actualSolutions[i] = new Solution(tempSolutions.get(i), fitness, excess);
+			totalFitness += fitness;
+			if(logger.isDebugEnabled())
+				logger.debug("Individual[{}] created: {}", i, actualSolutions[i]);
 		}
 		return new SolutionSet(actualSolutions, totalFitness);
 	}
@@ -61,23 +64,38 @@ public class GeneticAlgorithm {
 			// Create temporary population
 			SolutionSet tempPopulation = new SolutionSet(params.getPopulationSize());
 			// Loop over current population
-			for (int i = 0; i < params.getPopulationSize(); i = i + 2) {
+			for (int i = 0; i < params.getPopulationSize() - 1; i = i + 2) {
 				// Select parents
+				logger.debug("Parent selection");
 				Solution parent1 = SelectionOperators.rouletteSelection(population.getSolutions(),
 						population.getFitness());
 				Solution parent2 = SelectionOperators.rouletteSelection(population.getSolutions(),
 						population.getFitness());
+				if (logger.isDebugEnabled()) {
+					logger.debug("Parent 1: {}", Arrays.toString(parent1.getRepresentation()));
+					logger.debug("Parent 2: {}", Arrays.toString(parent2.getRepresentation()));
+				}
 				// Apply crossover
 				if (params.getCrossoverRate() > Math.random()) {
 					// Initialize offspring
+					logger.debug("Crossover operation");
 					List<long[]> offsprings = crossover.orderCrossover(parent1.getRepresentation(),
 							parent2.getRepresentation());
 					long[] chromosome1 = offsprings.get(0);
 					long[] chromosome2 = offsprings.get(1);
+					if (logger.isDebugEnabled()) {
+						logger.debug("Offspring 1: {}", Arrays.toString(chromosome1));
+						logger.debug("Offspring 2: {}", Arrays.toString(chromosome2));
+					}
 					// Apply mutation
 					if (params.getMutationRate() > Math.random()) {
 						chromosome1 = neighborhood.randomSwaps(chromosome1);
 						chromosome2 = neighborhood.randomSwaps(chromosome2);
+						if (logger.isDebugEnabled()) {
+							logger.debug("Mutation operation");
+							logger.debug("Offspring mutated 1: {}", Arrays.toString(chromosome1));
+							logger.debug("Offspring mutated 2: {}", Arrays.toString(chromosome2));
+						}
 					}
 					// Add offsprings to new population
 					Solution offspring1 = new Solution(chromosome1);
@@ -90,6 +108,7 @@ public class GeneticAlgorithm {
 					tempPopulation.setSolution(i + 1, offspring2);
 				} else {
 					// Add parents to new population without applying crossover
+					logger.debug("Crossover operation not applied");
 					tempPopulation.setSolution(i, parent1);
 					tempPopulation.setSolution(i + 1, parent2);
 				}
@@ -100,6 +119,7 @@ public class GeneticAlgorithm {
 			// Increase generation counter
 			generation++;
 			// Set temporary population as new population
+			logger.debug("Setting temporary population as new population");
 			population = tempPopulation;
 		}
 		return population;

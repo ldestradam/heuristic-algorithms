@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,8 @@ import mx.com.lestradam.algorithms.elements.DataSet;
  */
 @Component
 public class NeighborhoodOperators {
+	
+	private static Logger logger = LoggerFactory.getLogger(NeighborhoodOperators.class);
 	
 	private static Random rnd = new Random();
 	private long depot;
@@ -43,6 +47,10 @@ public class NeighborhoodOperators {
 	 * @return new solution
 	 */
 	public long[] randomSwaps(long[] solution){
+		if (logger.isTraceEnabled()) {
+			logger.trace("Random swap");
+			logger.trace("Solution: {}", Arrays.toString(solution));
+		}
 		boolean right = false;
 		int swapPointA;
 		int swapPointB;
@@ -53,9 +61,13 @@ public class NeighborhoodOperators {
 			swapPointB = getRandomlyPoint(bound);
 			right = notEquals(swapPointA, swapPointB) && notDepot(swapPointA, swapPointB, tmpSolution);
 		}while(!right);
+		logger.trace("Point a: {} - Point b: {}", swapPointA, swapPointB);
 		long aux = tmpSolution[swapPointA];
 		tmpSolution[swapPointA] = tmpSolution[swapPointB];
 		tmpSolution[swapPointB] = aux;
+		if (logger.isTraceEnabled()) {
+			logger.trace("Solution mutated: {}", Arrays.toString(tmpSolution));
+		}
 		return tmpSolution;
 	}
 	

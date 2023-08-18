@@ -1,37 +1,35 @@
 package mx.com.lestradam.algorithms.operators;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import mx.com.lestradam.algorithms.elements.Solution;
 
 public class SelectionOperators {
-	
+
+	private static Logger logger = LoggerFactory.getLogger(SelectionOperators.class);
+
 	private SelectionOperators() {
-	    throw new IllegalStateException("Utility class");
-	  }
-	
+		throw new IllegalStateException("Utility class");
+	}
+
 	public static Solution rouletteSelection(Solution[] individuals, double populationFitness) {
 		// Spin roulette wheel
 		double rouletteWheelPosition = Math.random() * populationFitness;
-		//Find parent
+		logger.trace("Selection by roulette Amount: {} Wheel position: {}", populationFitness, rouletteWheelPosition);
+		// Find parent
 		double spinWheel = 0;
-		for(Solution individual: individuals) {
-			spinWheel += individual.getFitness();
-			if (spinWheel >= rouletteWheelPosition)
-				return individual;
-		}
-		return individuals[individuals.length - 1];
-	}
-	
-	public static int rouletteSelectionIndex(Solution[] individuals, double populationFitness) {
-		// Spin roulette wheel
-		double rouletteWheelPosition = Math.random() * populationFitness;
-		//Find parent
-		double spinWheel = 0;
-		for(int i = 0; i < individuals.length; i++) {
+		for (int i = 0; i < individuals.length; i++) {
 			spinWheel += individuals[i].getFitness();
-			if (spinWheel >= rouletteWheelPosition)
-				return i;
+			if (spinWheel >= rouletteWheelPosition) {
+				if (logger.isTraceEnabled())
+					logger.trace("Individual selected[{}]: {}", i, individuals[i]);
+				return individuals[i];
+			}
 		}
-		return individuals.length - 1;
+		if (logger.isTraceEnabled())
+			logger.trace("Last individual[{}]: {}", (individuals.length - 1), individuals[individuals.length - 1]);
+		return individuals[individuals.length - 1];
 	}
 
 }

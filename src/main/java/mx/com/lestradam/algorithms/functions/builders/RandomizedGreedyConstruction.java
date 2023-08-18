@@ -50,7 +50,7 @@ public class RandomizedGreedyConstruction implements SolutionBuilder {
 
 	@Override
 	public long[] createSolution() {
-		logger.debug("Building initial solution ...");
+		logger.trace("Building initial solution ...");
 		long depot = dataset.getDepot().getId();
 		List<Long> unassignedCustomers = dataset.getNodes().stream().filter(customer -> customer.getId() != depot)
 				.map(Node::getId).collect(Collectors.toList());
@@ -71,13 +71,13 @@ public class RandomizedGreedyConstruction implements SolutionBuilder {
 			unassignedCustomers.remove(customerInd);
 		} while (!unassignedCustomers.isEmpty()); // Repeat until all customers are assigned to vehicle routes.
 		long[] solution = RoutesOperations.generateSolutionFromRoutes(routes);
-		if (logger.isDebugEnabled())
-			logger.debug("Solution created: {}", Arrays.toString(solution));
+		if (logger.isTraceEnabled())
+			logger.trace("Solution created: {}", Arrays.toString(solution));
 		return solution;
 	}
 
 	private int getFeasibleRouteIndex(final List<long[]> routes, final long customer) {
-		logger.debug("Checking feasible route for customer: {}", customer);
+		logger.trace("Checking feasible route for customer: {}", customer);
 		long[] distances = new long[routes.size()];
 		// Evaluate the cost of adding the selected customer to each of the available
 		// vehicle routes.
@@ -85,8 +85,8 @@ public class RandomizedGreedyConstruction implements SolutionBuilder {
 			long[] expectedRoute = ArrayUtils.add(routes.get(i), customer);
 			distances[i] = RoutesOperations.getDistanceRoute(expectedRoute, dataset.getEdges());
 		}
-		if (logger.isDebugEnabled())
-			logger.debug("Expected cost of routes: {}", Arrays.toString(distances));
+		if (logger.isTraceEnabled())
+			logger.trace("Expected cost of routes: {}", Arrays.toString(distances));
 		// Assign the selected customer to the vehicle route that results in the minimum
 		// cost increase.
 		for (int i = 0; i < routes.size(); i++) {
@@ -94,12 +94,12 @@ public class RandomizedGreedyConstruction implements SolutionBuilder {
 			long[] updatedRoute = ArrayUtils.add(routes.get(minRoute), customer);
 			long overcap = RoutesOperations.getRouteOverCap(updatedRoute, dataset.getNodes(),
 					parameters.getFleetCapacity());
-			if (logger.isDebugEnabled())
-				logger.debug("Checking route[{}] - OverCap: {} - {}", minRoute, overcap, Arrays.toString(updatedRoute));
+			if (logger.isTraceEnabled())
+				logger.trace("Checking route[{}] - OverCap: {} - {}", minRoute, overcap, Arrays.toString(updatedRoute));
 			// If the capacity constraint is violated, the customer cannot be added to the
 			// chosen route. The customer might be reassigned to a different route.
 			if (overcap == 0) {
-				logger.debug("Chosen feasible route: {}", minRoute);
+				logger.trace("Chosen feasible route: {}", minRoute);
 				return minRoute;
 			}
 		}
@@ -107,7 +107,7 @@ public class RandomizedGreedyConstruction implements SolutionBuilder {
 		// exceeding capacity reevaluate the customer selection.
 		// Default: The customer is then assigned to the route that results in the
 		// minimum cost increase.
-		logger.debug("No feasible route for customer: {}", customer);
+		logger.trace("No feasible route for customer: {}", customer);
 		return BasicOperations.getMinValueIndex(distances);
 	}
 

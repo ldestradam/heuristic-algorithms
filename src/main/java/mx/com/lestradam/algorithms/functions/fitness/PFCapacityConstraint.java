@@ -26,11 +26,12 @@ public class PFCapacityConstraint implements PenaltyFunction {
 
 	@Override
 	public double evaluate(long[] solution) {
+		if (logger.isDebugEnabled())
+			logger.trace("Checking if feasible solution: {}", Arrays.toString(solution));
 		long overcapacity = RoutesOperations.getSolutionOverCap(solution, dataset.getNodes(), params.getFleetCapacity(),
 				dataset.getDepot().getId());
 		double penalty = overcapacity * params.getCapacityPenalty();
-		if (logger.isDebugEnabled())
-			logger.trace("Overcapacity: {} Penalty: {} Solution :{}", overcapacity, penalty, Arrays.toString(solution));
+		logger.trace("Overcapacity: {} Penalty: {} ", overcapacity, penalty);
 		return penalty;
 	}
 

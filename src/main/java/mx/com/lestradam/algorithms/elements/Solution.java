@@ -2,8 +2,8 @@ package mx.com.lestradam.algorithms.elements;
 
 import java.util.Arrays;
 
-public class Solution{
-	
+public class Solution {
+
 	private long[] representation;
 	private double fitness;
 	private long overcap;
@@ -27,7 +27,7 @@ public class Solution{
 	public void setFitness(double fitness) {
 		this.fitness = fitness;
 	}
-	
+
 	public long[] getRepresentation() {
 		return representation;
 	}
@@ -46,8 +46,8 @@ public class Solution{
 
 	@Override
 	public String toString() {
-		return "Solution [representation=" + Arrays.toString(representation) + ", fitness=" + fitness + ", overcap="
-				+ overcap + "]";
+		return "Solution [fitness=" + fitness + ", overcap=" + overcap + ", size=" + representation.length
+				+ ", representation=" + Arrays.toString(representation) + "]";
 	}
 
 }
