@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import mx.com.lestradam.algorithms.elements.Edge;
 import mx.com.lestradam.algorithms.elements.Node;
 import mx.com.lestradam.algorithms.exceptions.DataException;
 
 public class RoutesOperations {
+	
+	private static Logger logger = LoggerFactory.getLogger(RoutesOperations.class);
 
 	private RoutesOperations() {
 		throw new IllegalStateException("Utility class");
@@ -92,6 +96,40 @@ public class RoutesOperations {
 		for (long[] routeAux : routes)
 			solution = ArrayUtils.addAll(solution, routeAux);
 		return solution;
+	}
+	
+	public static int getFeasibleRouteIndex(final List<long[]> routes, final List<Edge> edges, List<Node> nodes, final long customer, final long capacity) {
+		logger.trace("Checking feasible route for customer: {}", customer);
+		long[] distances = new long[routes.size()];
+		// Evaluate the cost of adding the selected customer to each of the available
+		// vehicle routes.
+		for (int i = 0; i < routes.size(); i++) {
+			long[] expectedRoute = ArrayUtils.add(routes.get(i), customer);
+			distances[i] = getDistanceRoute(expectedRoute, edges);
+		}
+		if (logger.isTraceEnabled())
+			logger.trace("Expected cost of routes: {}", Arrays.toString(distances));
+		// Assign the selected customer to the vehicle route that results in the minimum
+		// cost increase.
+		for (int i = 0; i < routes.size(); i++) {
+			int minRoute = BasicOperations.getNthMinValueIndex(distances, i);
+			long[] updatedRoute = ArrayUtils.add(routes.get(minRoute), customer);
+			long overcap = getRouteOverCap(updatedRoute, nodes, capacity);
+			if (logger.isTraceEnabled())
+				logger.trace("Checking route[{}] - OverCap: {} - {}", minRoute, overcap, Arrays.toString(updatedRoute));
+			// If the capacity constraint is violated, the customer cannot be added to the
+			// chosen route. The customer might be reassigned to a different route.
+			if (overcap == 0) {
+				logger.trace("Chosen feasible route: {}", minRoute);
+				return minRoute;
+			}
+		}
+		// If no feasible assignment can be found for the selected customer without
+		// exceeding capacity reevaluate the customer selection.
+		// Default: The customer is then assigned to the route that results in the
+		// minimum cost increase.
+		logger.trace("No feasible route for customer: {}", customer);
+		return BasicOperations.getMinValueIndex(distances);
 	}
 
 }
