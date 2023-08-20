@@ -67,10 +67,8 @@ public class GeneticAlgorithm {
 			for (int i = 0; i < params.getPopulationSize() - 1; i = i + 2) {
 				// Select parents
 				logger.debug("Parent selection");
-				Solution parent1 = SelectionOperators.rouletteSelection(population.getSolutions(),
-						population.getFitness());
-				Solution parent2 = SelectionOperators.rouletteSelection(population.getSolutions(),
-						population.getFitness());
+				Solution parent1 = SelectionOperators.inverseRouletteSelection(population.getSolutions());
+				Solution parent2 = SelectionOperators.inverseRouletteSelection(population.getSolutions());
 				if (logger.isDebugEnabled()) {
 					logger.debug("Parent 1: {}", Arrays.toString(parent1.getRepresentation()));
 					logger.debug("Parent 2: {}", Arrays.toString(parent2.getRepresentation()));

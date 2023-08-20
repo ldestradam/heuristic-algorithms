@@ -28,7 +28,7 @@ public class CrossoverOperators {
 	@Autowired
 	private AlgorithmsParameters parameters;
 
-	public List<long[]> orderCrossover(long[] parent1, long[] parent2) {
+	public List<long[]> orderCrossover(final long[] parent1, final long[] parent2) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Order Crossover operator");
 			logger.trace("Parent 1: {}", Arrays.toString(parent1));
@@ -54,7 +54,7 @@ public class CrossoverOperators {
 		return Arrays.asList(offspring1, offspring2);
 	}
 
-	private long[] orderCrossoverOperation(long[] parent1, long[] parent2, int crossoverPoint1, int crossoverPoint2) {
+	private long[] orderCrossoverOperation(final long[] parent1, final long[] parent2, final int crossoverPoint1, final int crossoverPoint2) {
 		Node depot = dataset.getDepot();
 		List<Long> offspring = new ArrayList<>();
 		for (int i = crossoverPoint1; i <= crossoverPoint2; i++) {
@@ -74,7 +74,7 @@ public class CrossoverOperators {
 		return generateSolution(offspring);
 	}
 
-	private long[] generateSolution(List<Long> offspring) {
+	private long[] generateSolution(final List<Long> offspring) {
 		List<long[]> routes = new ArrayList<>();
 		for (int i = 0; i < parameters.getNumFleet(); i++)
 			routes.add(new long[] { dataset.getDepot().getId() });

@@ -46,7 +46,7 @@ public class NeighborhoodOperators {
 	 * @param solution
 	 * @return new solution
 	 */
-	public long[] randomSwaps(long[] solution){
+	public long[] randomSwaps(final long[] solution){
 		if (logger.isTraceEnabled()) {
 			logger.trace("Random swap");
 			logger.trace("Solution: {}", Arrays.toString(solution));
