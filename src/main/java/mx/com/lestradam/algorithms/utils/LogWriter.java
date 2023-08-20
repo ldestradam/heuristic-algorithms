@@ -22,13 +22,13 @@ public class LogWriter {
 
 	public static void printCurrentIteration(final SolutionSet population, final int generation) {
 		Solution[] individuals = population.getSolutions();
-		double[] fitness = new double[individuals.length];
+		double[] fitnesses = new double[individuals.length];
 		for (int i = 0; i < individuals.length; i++)
-			fitness[i] = individuals[i].getFitness();
-		int indMax = BasicOperations.getMaxValueIndex(fitness);
-		int indMin = BasicOperations.getMinValueIndex(fitness);
-		double avg = StatisticalOperations.getAvgValue(fitness);
-		logger.info("ITERATION: {} \t MAX: {} \t MIN: {} \t AVG: {}", generation, fitness[indMax], fitness[indMin],
+			fitnesses[i] = individuals[i].getFitness();
+		int indMax = BasicOperations.getMaxValueIndex(fitnesses);
+		int indMin = BasicOperations.getMinValueIndex(fitnesses);
+		double avg = StatisticalOperations.getAvgValue(fitnesses);
+		logger.info("ITERATION: {} \t MAX: {} \t MIN: {} \t AVG: {}", generation, fitnesses[indMax], fitnesses[indMin],
 				avg);
 		if (logger.isDebugEnabled()) {
 			logger.debug("GENERAL FITNESS: {}", population.getFitness());
@@ -44,11 +44,17 @@ public class LogWriter {
 	}
 
 	public static void printPopulation(final SolutionSet population, final long duration) {
+		Solution[] solutions = population.getSolutions();
+		double[] fitnesses = new double[solutions.length];
+		for (int i = 0; i < solutions.length; i++) {
+			fitnesses[i] = solutions[i].getFitness();
+		}
+		int bestSolution = BasicOperations.getMinValueIndex(fitnesses);
 		logger.info("FINAL RESULTS");
 		logger.info("TIME ELAPSED: {} nano seconds", duration);
-		logger.info("POPULATION FITNESS: {}", population.getFitness());
-		for (Solution individual : population.getSolutions()) {
-			logger.info("{}", individual);
+		logger.info("BEST SOLUTION INDEX: {} BEST FITNESS: {} - POPULATION FITNESS: {}", bestSolution, fitnesses[bestSolution], population.getFitness());
+		for (int i = 0; i < solutions.length; i++) {
+			logger.info("[{}] - {}", i, solutions[i]);
 		}
 	}
 

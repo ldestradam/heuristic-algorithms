@@ -58,9 +58,8 @@ public class GeneticAlgorithm {
 		int generation = 1;
 		// Initialize population
 		SolutionSet population = initial();
+		LogWriter.printCurrentIteration(population, generation);
 		while (generation < params.getNumGenerations()) {
-			// Print current generation
-			LogWriter.printCurrentIteration(population, generation);
 			// Create temporary population
 			SolutionSet tempPopulation = new SolutionSet(params.getPopulationSize());
 			// Loop over current population
@@ -119,6 +118,8 @@ public class GeneticAlgorithm {
 			// Set temporary population as new population
 			logger.debug("Setting temporary population as new population");
 			population = tempPopulation;
+			// Print current generation
+			LogWriter.printCurrentIteration(population, generation);
 		}
 		return population;
 	}
