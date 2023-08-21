@@ -47,10 +47,6 @@ public class NeighborhoodOperators {
 	 * @return new solution
 	 */
 	public long[] randomSwaps(final long[] solution){
-		if (logger.isTraceEnabled()) {
-			logger.trace("Random swap");
-			logger.trace("Solution: {}", Arrays.toString(solution));
-		}
 		boolean right = false;
 		int swapPointA;
 		int swapPointB;
@@ -66,6 +62,8 @@ public class NeighborhoodOperators {
 		tmpSolution[swapPointA] = tmpSolution[swapPointB];
 		tmpSolution[swapPointB] = aux;
 		if (logger.isTraceEnabled()) {
+			logger.trace("Random swap");
+			logger.trace("Solution: {}", Arrays.toString(solution));
 			logger.trace("Solution mutated: {}", Arrays.toString(tmpSolution));
 		}
 		return tmpSolution;

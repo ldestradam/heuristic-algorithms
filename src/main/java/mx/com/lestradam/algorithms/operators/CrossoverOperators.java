@@ -29,11 +29,6 @@ public class CrossoverOperators {
 	private AlgorithmsParameters parameters;
 
 	public List<long[]> orderCrossover(final long[] parent1, final long[] parent2) {
-		if (logger.isTraceEnabled()) {
-			logger.trace("Order Crossover operator");
-			logger.trace("Parent 1: {}", Arrays.toString(parent1));
-			logger.trace("Parent 2: {}", Arrays.toString(parent2));
-		}
 		boolean success = false;
 		int crossoverPoint1 = 0;
 		int crossoverPoint2 = 0;
@@ -48,6 +43,9 @@ public class CrossoverOperators {
 		long[] offspring1 = orderCrossoverOperation(parent1, parent2, start, end);
 		long[] offspring2 = orderCrossoverOperation(parent2, parent1, start, end);
 		if (logger.isTraceEnabled()) {
+			logger.trace("Order Crossover operator");
+			logger.trace("Parent 1: {}", Arrays.toString(parent1));
+			logger.trace("Parent 2: {}", Arrays.toString(parent2));
 			logger.trace("Offspring 1 created: Size: {} - {}", offspring1.length, Arrays.toString(offspring1));
 			logger.trace("Offspring 2 created: Size: {} - {}", offspring2.length, Arrays.toString(offspring2));
 		}

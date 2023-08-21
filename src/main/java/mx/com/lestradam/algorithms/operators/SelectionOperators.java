@@ -34,7 +34,7 @@ public class SelectionOperators {
 		return individuals[individuals.length - 1];
 	}
 
-	public static Solution inverseRouletteSelection(Solution[] individuals) {
+	public static Solution inverseRouletteSelection(final Solution[] individuals) {
 		// Calculate Selection Probabilities and the Sum of Selection Probabilities
 		double totalFitness = 0;
 		double[] probabilities = new double[individuals.length];
