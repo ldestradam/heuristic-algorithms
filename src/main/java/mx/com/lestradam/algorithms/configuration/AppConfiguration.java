@@ -36,6 +36,7 @@ public class AppConfiguration {
 		parameters.setCrossoverRate( Double.valueOf(environment.getProperty("params.genetic.crossover-rate")) );
 		parameters.setNumGenerations( Integer.valueOf(environment.getProperty("params.genetic.num-generations")) );
 		parameters.setPopulationSize( Integer.valueOf(environment.getProperty("params.genetic.population-size")) );
+		parameters.setElitism( Integer.valueOf(environment.getProperty("params.genetic.elitism")) );
 		return parameters;
 	}
 	

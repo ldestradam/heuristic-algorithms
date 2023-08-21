@@ -70,6 +70,7 @@ public class LogWriter {
 		logger.info("NUM. OF GENERATION: {}", params.getNumGenerations());
 		logger.info("CROSSOVER RATE: {}", params.getCrossoverRate());
 		logger.info("MUTATION RATE: {}", params.getMutationRate());
+		logger.info("ELITISM: {}", params.getElitism());
 	}
 
 	public static void printAbcParameters(final ABCParameters params) {

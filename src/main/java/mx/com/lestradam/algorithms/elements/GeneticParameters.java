@@ -6,6 +6,7 @@ public class GeneticParameters {
 	private int populationSize;
 	private double mutationRate;
 	private double crossoverRate;
+	private int elitism;
 
 	public double getMutationRate() {
 		return mutationRate;
@@ -37,6 +38,14 @@ public class GeneticParameters {
 
 	public void setPopulationSize(int populationSize) {
 		this.populationSize = populationSize;
+	}
+
+	public int getElitism() {
+		return elitism;
+	}
+
+	public void setElitism(int elitism) {
+		this.elitism = elitism;
 	}
 
 }

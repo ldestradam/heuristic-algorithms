@@ -108,5 +108,10 @@
     "name": "params.capacity-penalty",
     "type": "java.lang.String",
     "description": "A description for 'params.capacity-penalty'"
+  },
+  {
+    "name": "params.genetic.elitism",
+    "type": "java.lang.String",
+    "description": "A description for 'params.genetic.elitism'"
   }
 ]}
