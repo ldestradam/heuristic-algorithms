@@ -72,6 +72,20 @@ public class BasicOperations {
 		}
 		return position;
 	}
+	
+	public static int getNthMinValueIndex(final double[] unOrderedArray, final int nElement) {
+		double[] values = Arrays.copyOf(unOrderedArray, unOrderedArray.length);
+		Arrays.sort(values);
+		double value = values[nElement];
+		int position = 0;
+		for (int j = 0; j < values.length; j++) {
+			if (value == unOrderedArray[j]) {
+				position = j;
+				break;
+			}
+		}
+		return position;
+	}
 
 	public static int getRandomlyPoint(int bound) {
 		return rnd.nextInt(bound);

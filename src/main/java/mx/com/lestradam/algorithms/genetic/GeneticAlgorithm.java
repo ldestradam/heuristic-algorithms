@@ -1,5 +1,6 @@
 package mx.com.lestradam.algorithms.genetic;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import mx.com.lestradam.algorithms.elements.GeneticParameters;
 import mx.com.lestradam.algorithms.elements.Solution;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
+import mx.com.lestradam.algorithms.functions.basic.BasicOperations;
 import mx.com.lestradam.algorithms.functions.builders.SolutionSetBuilder;
 import mx.com.lestradam.algorithms.functions.fitness.FFGeneticAlgorithm;
 import mx.com.lestradam.algorithms.operators.CrossoverOperators;
@@ -48,7 +50,7 @@ public class GeneticAlgorithm {
 			long excess = fitnessFunc.excess(tempSolutions.get(i));
 			actualSolutions[i] = new Solution(tempSolutions.get(i), fitness, excess);
 			totalFitness += fitness;
-			if(logger.isDebugEnabled())
+			if (logger.isDebugEnabled())
 				logger.debug("Individual[{}] created: {}", i, actualSolutions[i]);
 		}
 		return new SolutionSet(actualSolutions, totalFitness);
@@ -61,9 +63,9 @@ public class GeneticAlgorithm {
 		LogWriter.printCurrentIteration(population, generation);
 		while (generation < params.getNumGenerations()) {
 			// Create temporary population
-			SolutionSet tempPopulation = new SolutionSet(params.getPopulationSize());
+			List<Solution> tempPopulation = new ArrayList<>();
 			// Loop over current population
-			for (int i = 0; i < params.getPopulationSize() - 1; i = i + 2) {
+			while (tempPopulation.size() < (params.getPopulationSize() - params.getElitism())) {
 				// Select parents
 				logger.debug("Parent selection");
 				Solution parent1 = SelectionOperators.inverseRouletteSelection(population.getSolutions());
@@ -85,11 +87,11 @@ public class GeneticAlgorithm {
 						logger.debug("Offspring 2: {}", Arrays.toString(chromosome2));
 					}
 					// Apply mutation
+					logger.debug("Mutation operation");
 					if (params.getMutationRate() > Math.random()) {
 						chromosome1 = neighborhood.randomSwaps(chromosome1);
 						chromosome2 = neighborhood.randomSwaps(chromosome2);
 						if (logger.isDebugEnabled()) {
-							logger.debug("Mutation operation");
 							logger.debug("Offspring mutated 1: {}", Arrays.toString(chromosome1));
 							logger.debug("Offspring mutated 2: {}", Arrays.toString(chromosome2));
 						}
@@ -99,25 +101,43 @@ public class GeneticAlgorithm {
 					offspring1.setFitness(fitnessFunc.evaluateSolution(chromosome1));
 					offspring1.setOvercap(fitnessFunc.excess(chromosome1));
 					Solution offspring2 = new Solution(chromosome2);
-					offspring2.setFitness(fitnessFunc.evaluateSolution(offspring2.getRepresentation()));
+					offspring2.setFitness(fitnessFunc.evaluateSolution(chromosome2));
 					offspring2.setOvercap(fitnessFunc.excess(chromosome2));
-					tempPopulation.setSolution(i, offspring1);
-					tempPopulation.setSolution(i + 1, offspring2);
+					tempPopulation.add(offspring1);
+					if (tempPopulation.size() != (params.getPopulationSize() - params.getElitism()))
+						tempPopulation.add(offspring2);
 				} else {
 					// Add parents to new population without applying crossover
 					logger.debug("Crossover operation not applied");
-					tempPopulation.setSolution(i, parent1);
-					tempPopulation.setSolution(i + 1, parent2);
+					tempPopulation.add(parent1);
+					if (tempPopulation.size() != (params.getPopulationSize() - params.getElitism()))
+						tempPopulation.add(parent2);
 				}
 			}
+			// Elitism: Keep the top N best-performing individuals from the current
+			// generation
+			logger.debug("Elitism: {}", params.getElitism());
+			double[] fitnesses = Arrays.stream(population.getSolutions()).mapToDouble(Solution::getFitness).toArray();
+			Solution[] newPopulation = new Solution[params.getPopulationSize()];
+			for (int i = 0; i < params.getElitism(); i++) {
+				int ind = BasicOperations.getNthMinValueIndex(fitnesses, i);
+				newPopulation[i] = population.getSolution(ind);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Best solution[{}] {}", i, newPopulation[i]);
+				}
+			}
+			// Fill the rest of the new population with the remaining offspring
+			for (int i = 0; i < tempPopulation.size(); i++) {
+				newPopulation[params.getElitism() + i] = tempPopulation.get(i);
+			}
 			// Set fitness population
-			long populationFitness = fitnessFunc.evaluateSolutionSet(tempPopulation.getSolutions());
-			tempPopulation.setFitness(populationFitness);
+			long populationFitness = fitnessFunc.evaluateSolutionSet(newPopulation);
 			// Increase generation counter
 			generation++;
 			// Set temporary population as new population
 			logger.debug("Setting temporary population as new population");
-			population = tempPopulation;
+			population.setSolutions(newPopulation);
+			population.setFitness(populationFitness);
 			// Print current generation
 			LogWriter.printCurrentIteration(population, generation);
 		}
