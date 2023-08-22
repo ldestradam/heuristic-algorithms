@@ -1,5 +1,7 @@
 package mx.com.lestradam.algorithms.utils;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +9,7 @@ import mx.com.lestradam.algorithms.elements.ABCParameters;
 import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.elements.GeneticParameters;
 import mx.com.lestradam.algorithms.elements.PSOParameters;
+import mx.com.lestradam.algorithms.elements.PSOSolution;
 import mx.com.lestradam.algorithms.elements.Solution;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
 import mx.com.lestradam.algorithms.functions.basic.BasicOperations;
@@ -33,6 +36,21 @@ public class LogWriter {
 		if (logger.isDebugEnabled()) {
 			logger.debug("GENERAL FITNESS: {}", population.getFitness());
 			printSolutions(individuals);
+		}
+	}
+	
+	public static void printCurrentIterationPso(final List<PSOSolution> particles, final PSOSolution gBestPaticle, final int iteration) {
+		double[] fitnesses = particles.stream().mapToDouble(PSOSolution::getFitness).toArray();
+		int indMax = BasicOperations.getMaxValueIndex(fitnesses);
+		int indMin = BasicOperations.getMinValueIndex(fitnesses);
+		double avg = StatisticalOperations.getAvgValue(fitnesses);
+		logger.info("ITERATION: {} \t MAX: {} \t MIN: {} \t AVG: {}", iteration, fitnesses[indMax], fitnesses[indMin],
+				avg);
+		if (logger.isDebugEnabled()) {
+			logger.debug("BEST PARTICLE: {}", gBestPaticle);
+			for(int i = 0; i < particles.size(); i++) {
+				logger.debug("[{}] {}", i, particles.get(i));
+			}
 		}
 	}
 
