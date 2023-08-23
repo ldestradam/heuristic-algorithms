@@ -3,15 +3,15 @@ package mx.com.lestradam.algorithms.elements;
 import java.util.Arrays;
 
 public class PSOSolution {
-	
+
 	private double[] position;
 	private double[] velocity;
 	private double[] bestPosition;
 	private long[] solution;
 	private double fitnessBestPosition;
 	private double fitness;
-	
-	public PSOSolution( double[] position, double[] velocity) {
+
+	public PSOSolution(double[] position, double[] velocity) {
 		this.position = position;
 		this.velocity = velocity;
 	}
@@ -66,11 +66,9 @@ public class PSOSolution {
 
 	@Override
 	public String toString() {
-		return "PSOSolution [position=" + Arrays.toString(position) + ", velocity=" + Arrays.toString(velocity)
-				+ ", bestPosition=" + Arrays.toString(bestPosition) + ", solution=" + Arrays.toString(solution)
-				+ ", fitnessBestPosition=" + fitnessBestPosition + ", fitness=" + fitness + "]";
+		return "PSOSolution [fitness=" + fitness + ", fitnessBestPosition=" + fitnessBestPosition + ", solution="
+				+ Arrays.toString(solution) + ", position=" + Arrays.toString(position) + ", velocity="
+				+ Arrays.toString(velocity) + ", bestPosition=" + Arrays.toString(bestPosition) + "]";
 	}
-	
-	
-	
+
 }

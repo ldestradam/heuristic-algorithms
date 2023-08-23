@@ -55,17 +55,18 @@ public class FFParticleSwarmOptimization {
 		double pBestUpdate;
 		double gBestUpdate;
 		double[] velocityUpdated = new double[velocity.length];
+		logger.trace("W[{}] C1[{}] C2[{}] Rand1[{}] Rand2[{}]", w, c1, c2, rand1, rand2);
 		for(int i = 0; i < velocityUpdated.length; i++) {
 			pBestUpdate = (pBest[i] - position[i]) * c1 * rand1;
 			gBestUpdate = (gBest[i] - position[i]) * c2 * rand2;
 			velocityUpdated[i] = (w * velocity[i]) + pBestUpdate + gBestUpdate;
+			logger.trace("[{}]: lBest: {} gBest: {} V: {}", i, pBestUpdate, gBestUpdate, velocityUpdated);
 		}
 		if (logger.isTraceEnabled()) {
-			logger.trace("W[{}]", w);
-			logger.trace("C1[{}] C2[{}]", c1, c2);
-			logger.trace("Rand1[{}] Rand1[{}]", rand1, rand2);
 			logger.trace("Position: {}", Arrays.toString(position));
 			logger.trace("Velocity: {}", Arrays.toString(velocity));
+			logger.trace("pBest: {}", Arrays.toString(pBest));
+			logger.trace("gBest: {}", Arrays.toString(gBest));
 			logger.trace("New velocity: {}", Arrays.toString(velocityUpdated));
 		}
 		return velocityUpdated;
