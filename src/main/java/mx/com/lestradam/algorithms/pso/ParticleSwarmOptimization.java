@@ -13,6 +13,7 @@ import mx.com.lestradam.algorithms.elements.PSOParameters;
 import mx.com.lestradam.algorithms.elements.PSOSolution;
 import mx.com.lestradam.algorithms.elements.Solution;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
+import mx.com.lestradam.algorithms.functions.basic.BasicOperations;
 import mx.com.lestradam.algorithms.functions.builders.SBParticleSwarmOptimization;
 import mx.com.lestradam.algorithms.functions.fitness.FFParticleSwarmOptimization;
 import mx.com.lestradam.algorithms.utils.LogWriter;
@@ -35,11 +36,12 @@ public class ParticleSwarmOptimization {
 	private FFParticleSwarmOptimization fitnessFunc;
 
 	public void initial() {
+		logger.debug("Creating initial population...");
 		int numParticules = psoParameters.getNumParticles();
 		particules = new ArrayList<>();
 		for (int i = 0; i < numParticules; i++) {
-			double[] position = solutionBuilder.generateRandomArrayNumbers();
-			double[] velocity = solutionBuilder.generateRandomArrayNumbers();
+			double[] position = solutionBuilder.createRandomPosition();
+			double[] velocity = solutionBuilder.createRandomVelocity();
 			long[] solution = solutionBuilder.encodePosition(position);
 			double fitness = fitnessFunc.evaluateSolution(solution);
 			PSOSolution particle = new PSOSolution(position, velocity);
@@ -48,19 +50,17 @@ public class ParticleSwarmOptimization {
 			particle.setFitness(fitness);
 			particle.setFitnessBestPosition(fitness);
 			particules.add(particle);
+			if (logger.isDebugEnabled())
+				logger.debug("Particle[{}] created: {}", i, particle);
 		}
-		double minCost = particules.get(0).getFitness();
-		int minParticleIndex = 0;
-		for (int i = 0; i < numParticules; i++) {
-			if (particules.get(i).getFitness() < minCost) {
-				minCost = particules.get(i).getFitness();
-				minParticleIndex = i;
-			}
-		}
+		double[] fitnesses =  particules.stream().mapToDouble(PSOSolution::getFitness).toArray();
+		int minParticleIndex = BasicOperations.getMinValueIndex(fitnesses);
 		PSOSolution particle = particules.get(minParticleIndex);
 		gBestPosition = new PSOSolution(particle.getPosition(), particle.getVelocity());
 		gBestPosition.setSolution(particle.getSolution());
 		gBestPosition.setFitness(particle.getFitness());
+		if (logger.isDebugEnabled())
+			logger.debug("Best Particle[{}]: {}", minParticleIndex, gBestPosition);
 	}
 
 	public SolutionSet generateSolutionSet() {
@@ -84,8 +84,9 @@ public class ParticleSwarmOptimization {
 		initial();
 		int iteration = 1;
 		while (iteration < psoParameters.getNumIterations()) {
-			LogWriter.printCurrentIteration(generateSolutionSet(), iteration);
-			for (PSOSolution particle : particules) {
+			LogWriter.printCurrentIterationPso(particules, gBestPosition, iteration);
+			for (int i = 0; i < particules.size(); i++) {
+				PSOSolution particle = particules.get(i); 
 				double[] iVelocity = fitnessFunc.updateVelocity(particle.getPosition(), particle.getVelocity(),
 						particle.getBestPosition(), gBestPosition.getPosition());
 				double[] iPosition = fitnessFunc.updatePosition(particle.getPosition(), iVelocity);
@@ -96,17 +97,20 @@ public class ParticleSwarmOptimization {
 				particle.setSolution(iSolution);
 				particle.setFitness(iFitness);
 				if (iFitness < particle.getFitnessBestPosition()) {
+					logger.debug("Current Local Best Particle[{}] : {}", i, particle.getFitnessBestPosition());
+					logger.debug("New Local Best Particle[{}] : {}", i, particle.getFitness());
 					particle.setBestPosition(iPosition);
 					particle.setFitnessBestPosition(iFitness);
-					logger.debug("Local Best Particle updated ...");
 				}
 				if (iFitness < gBestPosition.getFitness()) {
+					logger.debug("Current Global Best Particle[{}] : {}", i, gBestPosition.getFitness());
+					logger.debug("New Global Best Particle[{}] : {}", i, particle.getFitness());
 					gBestPosition = new PSOSolution(iPosition, iVelocity);
 					gBestPosition.setSolution(iSolution);
 					gBestPosition.setFitness(iFitness);
-					logger.debug("Global Best Particle updated ...");
 				}
-				logger.debug("Particle updated: {}", particle);
+				if (logger.isDebugEnabled())
+					logger.debug("Particle updated: {}", particle);
 			}
 			iteration++;
 		}
