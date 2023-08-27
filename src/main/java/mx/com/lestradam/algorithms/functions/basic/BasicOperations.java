@@ -1,5 +1,6 @@
 package mx.com.lestradam.algorithms.functions.basic;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -131,6 +132,18 @@ public class BasicOperations {
 			}
 		}
 		return -1; // Element not found (should not reach here)
+	}
+
+	public static List<int[]> splitRange(final int range, int sections) {
+		List<int[]> splits = new ArrayList<>();
+		int sectionSize = range / sections;
+		int remainder = range % sections;
+		for (int i = 0; i < sections; i++) {
+			int sectionStart = i * sectionSize + Math.min(i, remainder);
+			int sectionEnd = sectionStart + sectionSize + (i < remainder ? 1 : 0) - 1;
+			splits.add(new int[] {sectionStart, sectionEnd});
+		}
+		return splits;
 	}
 
 }
