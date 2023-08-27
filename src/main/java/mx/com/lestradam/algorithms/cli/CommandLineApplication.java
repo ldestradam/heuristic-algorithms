@@ -6,8 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import mx.com.lestradam.algorithms.abc.ArtificialBeeColony;
-import mx.com.lestradam.algorithms.elements.ABCParameters;
+import mx.com.lestradam.algorithms.abc.ABCPrincipal;
 import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
 import mx.com.lestradam.algorithms.elements.PSOParameters;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
@@ -38,16 +37,13 @@ public class CommandLineApplication {
 	private GAPrincipal ga;
 
 	@Autowired
-	private ArtificialBeeColony abc;
+	private ABCPrincipal abc;
 
 	@Autowired
 	private ParticleSwarmOptimization pso;
 
 	@Autowired
 	private AlgorithmsParameters generalParams;
-
-	@Autowired
-	private ABCParameters abcParams;
 
 	@Autowired
 	private PSOParameters psoParams;
@@ -62,12 +58,15 @@ public class CommandLineApplication {
 				results.write(solutions.getSolutions(),
 						ArgumentsRetriever.retrieveArgumentValue(this.arguments, FILE_PATH));
 		} else if (algorithm.equals(ALGO_ABC)) {
-			executeAbcAlgorithm();
+			SolutionSet solutions = executeAbc();
+			if (ArgumentsRetriever.checkArgumentKey(this.arguments, FILE_PATH))
+				results.write(solutions.getSolutions(),
+						ArgumentsRetriever.retrieveArgumentValue(this.arguments, FILE_PATH));
 		} else {
 			executePsoAlgorithm();
 		}
 	}
-	
+
 	private String getAlgorithm() {
 		if (!ArgumentsRetriever.checkArgumentKey(this.arguments, ALGORITHM))
 			throw new DataException("Missing parameter: " + ALGORITHM);
@@ -100,16 +99,13 @@ public class CommandLineApplication {
 		LogWriter.printPopulation(solutions, duration);
 	}
 
-	private void executeAbcAlgorithm() {
-		LogWriter.printAbcParameters(abcParams);
-		long startTime = System.nanoTime();
-		SolutionSet solutions = abc.execute();
-		long endTime = System.nanoTime();
-		long duration = (endTime - startTime);
-		if (ArgumentsRetriever.checkArgumentKey(this.arguments, FILE_PATH))
-			results.write(solutions.getSolutions(),
-					ArgumentsRetriever.retrieveArgumentValue(this.arguments, FILE_PATH));
-		LogWriter.printPopulation(solutions, duration);
+	private SolutionSet executeAbc() {
+		if (!ArgumentsRetriever.checkArgumentKey(this.arguments, THREADS)) {
+			return abc.run();
+		} else {
+			int threads = Integer.parseInt(ArgumentsRetriever.retrieveArgumentValue(this.arguments, THREADS));
+			return abc.run(threads);
+		}
 	}
 
 }
