@@ -57,7 +57,7 @@ public class GeneticAlgorithm {
 	}
 
 	public SolutionSet execute() {
-		int generation = 1;
+		int generation = 0;
 		// Initialize population
 		SolutionSet population = initial();
 		LogWriter.printCurrentIteration(population, generation);

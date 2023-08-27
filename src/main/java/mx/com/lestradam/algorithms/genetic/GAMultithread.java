@@ -55,7 +55,7 @@ public class GAMultithread {
 		this.numThreads = numThreads;
 		// Initialize population
 		initial();
-		int generation = 1;
+		int generation = 0;
 		threadPool = Executors.newFixedThreadPool(this.numThreads);
 		LogWriter.printCurrentIteration(population, generation);
 		while (generation < params.getNumGenerations()) {
