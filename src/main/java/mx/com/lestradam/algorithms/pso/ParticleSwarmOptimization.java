@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.elements.PSOParameters;
 import mx.com.lestradam.algorithms.elements.PSOSolution;
-import mx.com.lestradam.algorithms.elements.Solution;
-import mx.com.lestradam.algorithms.elements.SolutionSet;
 import mx.com.lestradam.algorithms.functions.basic.BasicOperations;
 import mx.com.lestradam.algorithms.functions.builders.SBParticleSwarmOptimization;
 import mx.com.lestradam.algorithms.functions.fitness.FFParticleSwarmOptimization;
@@ -22,8 +20,8 @@ import mx.com.lestradam.algorithms.utils.LogWriter;
 public class ParticleSwarmOptimization {
 
 	private static Logger logger = LoggerFactory.getLogger(ParticleSwarmOptimization.class);
-	private List<PSOSolution> particules;
 	private PSOSolution gBestPosition;
+	private List<PSOSolution> particules;
 
 	@Autowired
 	private PSOParameters psoParameters;
@@ -63,24 +61,7 @@ public class ParticleSwarmOptimization {
 			logger.debug("Best Particle[{}]: {}", minParticleIndex, gBestPosition);
 	}
 
-	public SolutionSet generateSolutionSet() {
-		int numParticules = psoParameters.getNumParticles();
-		long fitness = 0;
-		SolutionSet solutionSet = new SolutionSet(numParticules + 1);
-		for (int i = 0; i < numParticules; i++) {
-			fitness += particules.get(i).getFitness();
-			long excess = fitnessFunc.excess(particules.get(i).getSolution());
-			Solution solution = new Solution(particules.get(i).getSolution(), particules.get(i).getFitness(), excess);
-			solutionSet.setSolution(i, solution);
-		}
-		long excess = fitnessFunc.excess(gBestPosition.getSolution());
-		Solution bestSolution = new Solution(gBestPosition.getSolution(), gBestPosition.getFitness(), excess);
-		solutionSet.setSolution(numParticules, bestSolution);
-		solutionSet.setFitness(fitness);
-		return solutionSet;
-	}
-
-	public SolutionSet execute() {
+	public List<PSOSolution> execute() {
 		initial();
 		int iteration = 1;
 		while (iteration < psoParameters.getNumIterations()) {
@@ -114,7 +95,7 @@ public class ParticleSwarmOptimization {
 			}
 			iteration++;
 		}
-		return generateSolutionSet();
+		return particules;
 	}
 
 }

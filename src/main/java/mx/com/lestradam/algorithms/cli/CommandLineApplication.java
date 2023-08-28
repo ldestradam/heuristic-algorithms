@@ -8,12 +8,11 @@ import org.springframework.stereotype.Component;
 
 import mx.com.lestradam.algorithms.abc.ABCPrincipal;
 import mx.com.lestradam.algorithms.elements.AlgorithmsParameters;
-import mx.com.lestradam.algorithms.elements.PSOParameters;
 import mx.com.lestradam.algorithms.elements.SolutionSet;
 import mx.com.lestradam.algorithms.exceptions.DataException;
 import mx.com.lestradam.algorithms.functions.builders.FileResultsBuilder;
 import mx.com.lestradam.algorithms.genetic.GAPrincipal;
-import mx.com.lestradam.algorithms.pso.ParticleSwarmOptimization;
+import mx.com.lestradam.algorithms.pso.PSOPrincipal;
 import mx.com.lestradam.algorithms.utils.ArgumentsRetriever;
 import mx.com.lestradam.algorithms.utils.LogWriter;
 
@@ -40,31 +39,26 @@ public class CommandLineApplication {
 	private ABCPrincipal abc;
 
 	@Autowired
-	private ParticleSwarmOptimization pso;
+	private PSOPrincipal pso;
 
 	@Autowired
 	private AlgorithmsParameters generalParams;
 
-	@Autowired
-	private PSOParameters psoParams;
-
 	public void execute(String[] arguments) {
+		SolutionSet solutions;
 		this.arguments = arguments;
 		String algorithm = getAlgorithm();
 		LogWriter.printGeneralParameters(generalParams);
 		if (algorithm.equals(ALGO_GA)) {
-			SolutionSet solutions = executeGa();
-			if (ArgumentsRetriever.checkArgumentKey(this.arguments, FILE_PATH))
-				results.write(solutions.getSolutions(),
-						ArgumentsRetriever.retrieveArgumentValue(this.arguments, FILE_PATH));
+			solutions = executeGa();
 		} else if (algorithm.equals(ALGO_ABC)) {
-			SolutionSet solutions = executeAbc();
-			if (ArgumentsRetriever.checkArgumentKey(this.arguments, FILE_PATH))
-				results.write(solutions.getSolutions(),
-						ArgumentsRetriever.retrieveArgumentValue(this.arguments, FILE_PATH));
+			solutions = executeAbc();
 		} else {
-			executePsoAlgorithm();
+			solutions = executePso();
 		}
+		if (ArgumentsRetriever.checkArgumentKey(this.arguments, FILE_PATH))
+			results.write(solutions.getSolutions(),
+					ArgumentsRetriever.retrieveArgumentValue(this.arguments, FILE_PATH));
 	}
 
 	private String getAlgorithm() {
@@ -87,24 +81,21 @@ public class CommandLineApplication {
 		}
 	}
 
-	private void executePsoAlgorithm() {
-		LogWriter.printPsoParameters(psoParams);
-		long startTime = System.nanoTime();
-		SolutionSet solutions = pso.execute();
-		long endTime = System.nanoTime();
-		long duration = (endTime - startTime);
-		if (ArgumentsRetriever.checkArgumentKey(this.arguments, FILE_PATH))
-			results.write(solutions.getSolutions(),
-					ArgumentsRetriever.retrieveArgumentValue(this.arguments, FILE_PATH));
-		LogWriter.printPopulation(solutions, duration);
-	}
-
 	private SolutionSet executeAbc() {
 		if (!ArgumentsRetriever.checkArgumentKey(this.arguments, THREADS)) {
 			return abc.run();
 		} else {
 			int threads = Integer.parseInt(ArgumentsRetriever.retrieveArgumentValue(this.arguments, THREADS));
 			return abc.run(threads);
+		}
+	}
+
+	private SolutionSet executePso() {
+		if (!ArgumentsRetriever.checkArgumentKey(this.arguments, THREADS)) {
+			return pso.run();
+		} else {
+			int threads = Integer.parseInt(ArgumentsRetriever.retrieveArgumentValue(this.arguments, THREADS));
+			return pso.run(threads);
 		}
 	}
 
