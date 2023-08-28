@@ -127,15 +127,15 @@ public class ABCMultithread {
 	public void sendOnlooker() {
 		logger.trace("ONLOOKER BEE PHASE");
 		List<int[]> splits = BasicOperations.splitRange(this.foodSourceSize, this.numThreads);
-		// Calculate the probability for each food source
-		double[] probabilities = fitnessFunctions.calculateProbabilities(foodSources.getSolutions());
-		List<Callable<String>> callables = new ArrayList<>();
-		for (int[] split : splits) {
-			callables.add(sendOnlooker(probabilities, split[0], split[1]));
-		}
 		// For each onlooker
 		for (int i = 0; i < params.getOnlookersBees(); i++) {
 			logger.trace("ONLOOKER BEE[{}]", i);
+			// Calculate the probability for each food source
+			double[] probabilities = fitnessFunctions.calculateProbabilities(foodSources.getSolutions());
+			List<Callable<String>> callables = new ArrayList<>();
+			for (int[] split : splits) {
+				callables.add(sendOnlooker(probabilities, split[0], split[1]));
+			}
 			List<Future<String>> futures = invokeThreads(callables);
 			if (logger.isTraceEnabled())
 				printThreadResults(futures);
@@ -186,7 +186,7 @@ public class ABCMultithread {
 		if (logger.isTraceEnabled())
 			printThreadResults(futures);
 	}
-	
+
 	public Callable<String> sendScoutBees(int start, int end) {
 		return () -> {
 			// If any employed bee becomes scout bee

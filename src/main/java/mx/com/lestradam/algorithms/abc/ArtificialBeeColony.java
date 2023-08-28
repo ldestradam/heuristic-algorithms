@@ -85,10 +85,10 @@ public class ArtificialBeeColony {
 
 	public void sendOnlooker() {
 		logger.trace("ONLOOKER BEE PHASE");
-		// Calculate the probability for each food source
-		double[] probabilities = fitnessFunctions.calculateProbabilities(foodSources.getSolutions());
 		// For each onlooker
 		for (int i = 0; i < params.getOnlookersBees(); i++) {
+			// Calculate the probability for each food source
+			double[] probabilities = fitnessFunctions.calculateProbabilities(foodSources.getSolutions());
 			for (int j = 0; j < foodSourceSize; j++) {
 				double rand = Math.random();
 				if (rand < probabilities[j]) {
