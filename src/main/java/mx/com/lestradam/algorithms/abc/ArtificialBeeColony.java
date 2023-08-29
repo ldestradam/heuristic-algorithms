@@ -56,7 +56,7 @@ public class ArtificialBeeColony {
 	}
 
 	public void sendEmployedBees() {
-		logger.trace("EMPLOYED BEE PHASE");
+		logger.debug("EMPLOYED BEE PHASE");
 		// For each employed bee.(food resource)
 		for (int i = 0; i < foodSourceSize; i++) {
 			Solution foodSource = foodSources.getSolution(i);
@@ -72,19 +72,21 @@ public class ArtificialBeeColony {
 				Solution newNeighbor = new Solution(neighbor, neighborValue, excess);
 				foodSources.setSolution(i, newNeighbor);
 				foodSourceLimits[i] = 0;
+				logger.debug("Food source [{}] limit count reset", i);
 			} else {
+				logger.debug("Food source [{}] limit count incremented", i);
 				foodSourceLimits[i] = foodSourceLimits[i] + 1;
 			}
-			if (logger.isTraceEnabled()) {
-				logger.trace("Food source [{}] limit count: {}", i, foodSourceLimits[i]);
-				logger.trace("Food source {} Fitness: {}", foodSource.getRepresentation(), foodSourceFitness);
-				logger.trace("Neighbor    {} Fitness: {}", neighbor, neighborFitness);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Food source [{}] limit count: {}", i, foodSourceLimits[i]);
+				logger.debug("Food source {} Fitness: {} - {}", foodSource.getRepresentation(), foodSourceFitness, foodSource.getFitness());
+				logger.debug("Neighbor    {} Fitness: {} - {}", neighbor, neighborFitness, neighborValue);
 			}
 		}
 	}
 
 	public void sendOnlooker() {
-		logger.trace("ONLOOKER BEE PHASE");
+		logger.debug("ONLOOKER BEE PHASE");
 		// For each onlooker
 		for (int i = 0; i < params.getOnlookersBees(); i++) {
 			// Calculate the probability for each food source
@@ -105,13 +107,15 @@ public class ArtificialBeeColony {
 						long excess = fitnessFunctions.excess(neighbor);
 						Solution newNeighbor = new Solution(neighbor, neighborValue, excess);
 						foodSources.setSolution(j, newNeighbor);
+						logger.debug("Food source [{}] limit count reset", j);
 					} else {
+						logger.debug("Food source [{}] limit count incremented", j);
 						foodSourceLimits[j] = foodSourceLimits[j] + 1;
 					}
-					if (logger.isTraceEnabled()) {
-						logger.trace("Food source [{}] limit count: {}", j, foodSourceLimits[j]);
-						logger.trace("Food source {} Fitness: {}", foodSource.getRepresentation(), foodSourceFitness);
-						logger.trace("Neighbor    {} Fitness: {}", neighbor, neighborFitness);
+					if (logger.isDebugEnabled()) {
+						logger.debug("Food source [{}] limit count: {}", j, foodSourceLimits[j]);
+						logger.debug("Food source {} Fitness: {} - {}", foodSource.getRepresentation(), foodSourceFitness, foodSource.getFitness());
+						logger.debug("Neighbor    {} Fitness: {} - {}", neighbor, neighborFitness, neighborValue);
 					}
 				}
 
@@ -120,10 +124,11 @@ public class ArtificialBeeColony {
 	}
 
 	public void sendScoutBees() {
-		logger.trace("SCOUT BEE PHASE");
+		logger.debug("SCOUT BEE PHASE");
 		// If any employed bee becomes scout bee
 		for (int i = 0; i < foodSourceSize; i++) {
 			// Send the scout bee to a randomly produced food source
+			logger.debug("Food source [{}] limit count: {}", i, foodSourceLimits[i]);
 			if (foodSourceLimits[i] >= params.getImprovedLimit()) {
 				long[] solution = solutionBuilder.createSolution();
 				double fitness = fitnessFunctions.evaluateSolution(solution);
@@ -131,7 +136,7 @@ public class ArtificialBeeColony {
 				Solution newFoodSource = new Solution(solution, fitness, excess);
 				foodSources.setSolution(i, newFoodSource);
 				foodSourceLimits[i] = 0;
-				logger.trace("Food source [{}] limit count reset", i);
+				logger.debug("Food source [{}] limit count reset", i);
 			}
 		}
 	}

@@ -91,7 +91,7 @@ public class ParticleSwarmOptimization {
 					gBestPosition.setFitness(iFitness);
 				}
 				if (logger.isDebugEnabled())
-					logger.debug("Particle updated: {}", particle);
+					logger.debug("Particle updated[{}]: {}", i, particle);
 			}
 			iteration++;
 		}

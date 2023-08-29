@@ -26,15 +26,15 @@ public class OFTotalDistanceAndCapacityConstraint implements ObjectiveFunction {
 
 	@Override
 	public double evaluate(long[] solution) {
-		if (logger.isDebugEnabled())
-			logger.debug("Assessing Solution:{}", Arrays.toString(solution));
+		if (logger.isTraceEnabled())
+			logger.trace("Assessing Solution:{}", Arrays.toString(solution));
 		double distance = 0;
 		List<long[]> routes = RoutesOperations.splitIntoRoute(solution, dataset.getDepot().getId());
 		for (long[] route : routes)
 			distance += RoutesOperations.getDistanceRoute(route, dataset.getEdges());
 		double totalPenalty = penalty.evaluate(solution);
 		double cost = distance + totalPenalty;
-		logger.debug("Distance: {} - Penalty: {} - Costs: {}", distance, totalPenalty, cost);
+		logger.trace("Distance: {} - Penalty: {} - Costs: {}", distance, totalPenalty, cost);
 		return cost;
 	}
 

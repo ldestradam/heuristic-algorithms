@@ -44,8 +44,8 @@ public class LogWriter {
 		int indMax = BasicOperations.getMaxValueIndex(fitnesses);
 		int indMin = BasicOperations.getMinValueIndex(fitnesses);
 		double avg = StatisticalOperations.getAvgValue(fitnesses);
-		logger.info("ITERATION: {} \t MAX: {} \t MIN: {} \t AVG: {}", iteration, fitnesses[indMax], fitnesses[indMin],
-				avg);
+		logger.info("ITERATION: {} \t MAX: {} \t MIN: {} \t AVG: {} \t BEST: {}", iteration, fitnesses[indMax], fitnesses[indMin],
+				avg, gBestPaticle.getFitness());
 		if (logger.isDebugEnabled()) {
 			logger.debug("BEST PARTICLE: {}", gBestPaticle);
 			for(int i = 0; i < particles.size(); i++) {
