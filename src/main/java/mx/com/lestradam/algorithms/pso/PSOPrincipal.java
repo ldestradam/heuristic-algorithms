@@ -57,6 +57,7 @@ public class PSOPrincipal {
 	}
 	
 	private SolutionSet generateSolutionSet(final List<PSOSolution> particules) {
+		logger.info("GENERATING SOLUTION SET FOR {} PARTICULES.", particules.size());
 		int numParticules = params.getNumParticles();
 		long totalFitness = 0;
 		SolutionSet solutionSet = new SolutionSet(numParticules);

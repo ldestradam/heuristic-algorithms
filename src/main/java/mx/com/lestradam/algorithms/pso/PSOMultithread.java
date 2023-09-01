@@ -57,7 +57,7 @@ public class PSOMultithread {
 		while (iteration < params.getNumIterations()) {
 			List<Future<String>> futures = invokeThreads(callables);
 			iteration++;
-			if (logger.isTraceEnabled())
+			if (logger.isDebugEnabled())
 				printThreadResults(futures);
 			LogWriter.printCurrentIterationPso(particules, gBestPosition, iteration);
 		}
@@ -72,7 +72,7 @@ public class PSOMultithread {
 		List<Callable<String>> callables = splits.stream().map(split -> createParticles(split[0], split[1]))
 				.collect(Collectors.toList());
 		List<Future<String>> futures = invokeThreads(callables);
-		if (logger.isTraceEnabled())
+		if (logger.isDebugEnabled())
 			printThreadResults(futures);
 		double[] fitnesses = particules.stream().mapToDouble(PSOSolution::getFitness).toArray();
 		int minParticleIndex = BasicOperations.getMinValueIndex(fitnesses);
@@ -125,21 +125,21 @@ public class PSOMultithread {
 				}
 				setBestGlobalPosition(particle, i);
 				if (logger.isDebugEnabled())
-					logger.debug("Particle updated: {}", particle);
+					logger.debug("Particle updated[{}]: {}", i, particle);
 			}
 			return Thread.currentThread().getName() + " Start : " + start + " End: " + end;
 		};
 	}
 
 	private synchronized void setBestGlobalPosition(final PSOSolution particle, final int i) {
-		logger.trace("Attempting to update best solution...");
+		logger.debug("Attempting to update best solution...");
 		if (particle.getFitness() < gBestPosition.getFitness()) {
 			logger.debug("Current Global Best Particle[{}] : {}", i, gBestPosition.getFitness());
 			logger.debug("New Global Best Particle[{}] : {}", i, particle.getFitness());
 			gBestPosition = new PSOSolution(particle.getPosition(), particle.getVelocity());
 			gBestPosition.setSolution(particle.getSolution());
 			gBestPosition.setFitness(particle.getFitness());
-			logger.trace("Best solution updated ...");
+			logger.debug("Best solution updated ...");
 		}
 	}
 
@@ -147,7 +147,7 @@ public class PSOMultithread {
 		threadPool.shutdown();
 		try {
 			if (!threadPool.awaitTermination(5, TimeUnit.SECONDS)) {
-				logger.trace("Threads were shutting down...");
+				logger.debug("Threads were shutting down...");
 				threadPool.shutdownNow();
 			}
 		} catch (InterruptedException e) {
@@ -166,7 +166,7 @@ public class PSOMultithread {
 	private void printThreadResults(List<Future<String>> futures) {
 		for (Future<String> future : futures) {
 			try {
-				logger.trace(future.get());
+				logger.debug(future.get());
 			} catch (InterruptedException | ExecutionException e) {
 				throw new AlgorithmExecutionException("Error getting thread results", e);
 			}
