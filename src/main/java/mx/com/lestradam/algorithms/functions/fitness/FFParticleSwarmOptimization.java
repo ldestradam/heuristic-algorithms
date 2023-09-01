@@ -50,16 +50,16 @@ public class FFParticleSwarmOptimization {
 		float w = psoParameters.getInertia();
 		float c1 = psoParameters.getAccelerationC1();
 		float c2 = psoParameters.getAccelerationC2();
-		double rand1 = Math.random();
-		double rand2 = Math.random();
 		double pBestUpdate;
 		double gBestUpdate;
 		double[] velocityUpdated = new double[velocity.length];
-		logger.trace("W[{}] C1[{}] C2[{}] Rand1[{}] Rand2[{}]", w, c1, c2, rand1, rand2);
 		for(int i = 0; i < velocityUpdated.length; i++) {
+			double rand1 = Math.random();
+			double rand2 = Math.random();
 			pBestUpdate = (pBest[i] - position[i]) * c1 * rand1;
 			gBestUpdate = (gBest[i] - position[i]) * c2 * rand2;
 			velocityUpdated[i] = (w * velocity[i]) + pBestUpdate + gBestUpdate;
+			logger.trace("W[{}] C1[{}] C2[{}] Rand1[{}] Rand2[{}]", w, c1, c2, rand1, rand2);
 			logger.trace("[{}]: lBest: {} gBest: {} V: {}", i, pBestUpdate, gBestUpdate, velocityUpdated);
 		}
 		if (logger.isTraceEnabled()) {
