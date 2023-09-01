@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import mx.com.lestradam.algorithms.utils.LogWriter;
 public class PSOMultithread {
 
 	private static Logger logger = LoggerFactory.getLogger(PSOMultithread.class);
+	private int numThreads;
 	private PSOSolution gBestPosition;
 	private ExecutorService threadPool;
 	private List<PSOSolution> particules;
@@ -42,9 +44,10 @@ public class PSOMultithread {
 	private FFParticleSwarmOptimization fitnessFunc;
 
 	public List<PSOSolution> execute(int numThreads) {
+		this.numThreads = numThreads;
+		this.threadPool = Executors.newFixedThreadPool(this.numThreads);
 		initial();
 		int iteration = 0;
-		this.threadPool = Executors.newFixedThreadPool(numThreads);
 		List<int[]> splits = BasicOperations.splitRange(this.params.getNumParticles(), numThreads);
 		List<Callable<String>> callables = new ArrayList<>();
 		for (int[] split : splits) {
@@ -65,20 +68,12 @@ public class PSOMultithread {
 	public void initial() {
 		logger.debug("Creating initial population...");
 		particules = new ArrayList<>();
-		for (int i = 0; i < params.getNumParticles(); i++) {
-			double[] position = solutionBuilder.createRandomPosition();
-			double[] velocity = solutionBuilder.createRandomVelocity();
-			long[] solution = solutionBuilder.encodePosition(position);
-			double fitness = fitnessFunc.evaluateSolution(solution);
-			PSOSolution particle = new PSOSolution(position, velocity);
-			particle.setSolution(solution);
-			particle.setBestPosition(position);
-			particle.setFitness(fitness);
-			particle.setFitnessBestPosition(fitness);
-			particules.add(particle);
-			if (logger.isDebugEnabled())
-				logger.debug("Particle[{}] created: {}", i, particle);
-		}
+		List<int[]> splits = BasicOperations.splitRange(params.getNumParticles(), this.numThreads);
+		List<Callable<String>> callables = splits.stream().map(split -> createParticles(split[0], split[1]))
+				.collect(Collectors.toList());
+		List<Future<String>> futures = invokeThreads(callables);
+		if (logger.isTraceEnabled())
+			printThreadResults(futures);
 		double[] fitnesses = particules.stream().mapToDouble(PSOSolution::getFitness).toArray();
 		int minParticleIndex = BasicOperations.getMinValueIndex(fitnesses);
 		PSOSolution particle = particules.get(minParticleIndex);
@@ -87,6 +82,26 @@ public class PSOMultithread {
 		gBestPosition.setFitness(particle.getFitness());
 		if (logger.isDebugEnabled())
 			logger.debug("Best Particle[{}]: {}", minParticleIndex, gBestPosition);
+	}
+	
+	private Callable<String> createParticles(int start, int end){
+		return () -> {
+			for (int i = start; i <= end; i++) {
+				double[] position = solutionBuilder.createRandomPosition();
+				double[] velocity = solutionBuilder.createRandomVelocity();
+				long[] solution = solutionBuilder.encodePosition(position);
+				double fitness = fitnessFunc.evaluateSolution(solution);
+				PSOSolution particle = new PSOSolution(position, velocity);
+				particle.setSolution(solution);
+				particle.setBestPosition(position);
+				particle.setFitness(fitness);
+				particle.setFitnessBestPosition(fitness);
+				particules.add(particle);
+				if (logger.isDebugEnabled())
+					logger.debug("Particle[{}] created: {}", i, particle);
+			}
+			return Thread.currentThread().getName() + " Start : " + start + " End: " + end;
+		};
 	}
 
 	private Callable<String> updateParticles(int start, int end) {

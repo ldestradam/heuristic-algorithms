@@ -48,10 +48,10 @@ public class ABCMultithread {
 	private ExecutorService threadPool;
 
 	public SolutionSet execute(int numThreads) {
-		initial();
-		int iteration = 0;
 		this.numThreads = numThreads;
 		this.threadPool = Executors.newFixedThreadPool(this.numThreads);
+		initial();
+		int iteration = 0;
 		while (iteration < params.getNumIterations()) {
 			LogWriter.printCurrentIteration(foodSources, iteration);
 			sendEmployedBees();
@@ -71,7 +71,7 @@ public class ABCMultithread {
 		long totalobjValue = 0;
 		// Randomly generate a set of solutions as initial food sources and evaluate
 		// their nectar
-		List<long[]> tempSolutions = solutionBuilder.init(foodSourceSize);
+		List<long[]> tempSolutions = solutionBuilder.init(foodSourceSize, this.numThreads);
 		Solution[] actualSolutions = new Solution[foodSourceSize];
 		for (int i = 0; i < foodSourceSize; i++) {
 			double objValue = fitnessFunctions.evaluateSolution(tempSolutions.get(i));

@@ -82,7 +82,7 @@ public class GAMultithread {
 
 	private void initial() {
 		logger.debug("Creating initial population...");
-		List<long[]> tempSolutions = solutionBuilder.init(params.getPopulationSize());
+		List<long[]> tempSolutions = solutionBuilder.init(params.getPopulationSize(), this.numThreads);
 		Solution[] actualSolutions = new Solution[params.getPopulationSize()];
 		long totalFitness = 0;
 		for (int i = 0; i < params.getPopulationSize(); i++) {
