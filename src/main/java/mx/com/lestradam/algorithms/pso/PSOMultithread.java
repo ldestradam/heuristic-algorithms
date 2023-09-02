@@ -28,6 +28,7 @@ import mx.com.lestradam.algorithms.utils.LogWriter;
 public class PSOMultithread {
 
 	private static Logger logger = LoggerFactory.getLogger(PSOMultithread.class);
+	
 	private int numThreads;
 	private PSOSolution gBestPosition;
 	private ExecutorService threadPool;
@@ -48,17 +49,15 @@ public class PSOMultithread {
 		this.threadPool = Executors.newFixedThreadPool(this.numThreads);
 		initial();
 		int iteration = 0;
-		List<int[]> splits = BasicOperations.splitRange(this.params.getNumParticles(), numThreads);
+		List<int[]> splits = BasicOperations.splitRange(this.params.getNumParticles(), this.numThreads);
 		List<Callable<String>> callables = new ArrayList<>();
 		for (int[] split : splits) {
 			callables.add(updateParticles(split[0], split[1]));
 		}
 		LogWriter.printCurrentIterationPso(particules, gBestPosition, iteration);
 		while (iteration < params.getNumIterations()) {
-			List<Future<String>> futures = invokeThreads(callables);
+			invokeThreads(callables);
 			iteration++;
-			if (logger.isDebugEnabled())
-				printThreadResults(futures);
 			LogWriter.printCurrentIterationPso(particules, gBestPosition, iteration);
 		}
 		shutdownThreadPool();
@@ -67,13 +66,16 @@ public class PSOMultithread {
 
 	public void initial() {
 		logger.debug("Creating initial population...");
-		particules = new ArrayList<>();
 		List<int[]> splits = BasicOperations.splitRange(params.getNumParticles(), this.numThreads);
-		List<Callable<String>> callables = splits.stream().map(split -> createParticles(split[0], split[1]))
+		List<Callable<List<PSOSolution>>> callables = splits.stream().map(split -> createParticles(split[0], split[1]))
 				.collect(Collectors.toList());
-		List<Future<String>> futures = invokeThreads(callables);
-		if (logger.isDebugEnabled())
-			printThreadResults(futures);
+		List<Future<List<PSOSolution>>> futures = invokeThreads(callables);
+		particules = new ArrayList<>();
+		for (Future<List<PSOSolution>> future : futures) {
+			List<PSOSolution> parcialSet = getThreadResults(future);
+			particules.addAll(parcialSet);
+		}
+		logger.debug("Getting best particule from {} particules...", particules.size());
 		double[] fitnesses = particules.stream().mapToDouble(PSOSolution::getFitness).toArray();
 		int minParticleIndex = BasicOperations.getMinValueIndex(fitnesses);
 		PSOSolution particle = particules.get(minParticleIndex);
@@ -83,9 +85,11 @@ public class PSOMultithread {
 		if (logger.isDebugEnabled())
 			logger.debug("Best Particle[{}]: {}", minParticleIndex, gBestPosition);
 	}
-	
-	private Callable<String> createParticles(int start, int end){
+
+	private Callable<List<PSOSolution>> createParticles(int start, int end) {
 		return () -> {
+			int count = 0;
+			List<PSOSolution> parcialSwarn = new ArrayList<>();
 			for (int i = start; i <= end; i++) {
 				double[] position = solutionBuilder.createRandomPosition();
 				double[] velocity = solutionBuilder.createRandomVelocity();
@@ -96,16 +100,19 @@ public class PSOMultithread {
 				particle.setBestPosition(position);
 				particle.setFitness(fitness);
 				particle.setFitnessBestPosition(fitness);
-				particules.add(particle);
+				parcialSwarn.add(particle);
 				if (logger.isDebugEnabled())
 					logger.debug("Particle[{}] created: {}", i, particle);
+				count++;
 			}
-			return Thread.currentThread().getName() + " Start : " + start + " End: " + end;
+			logger.debug("{} Start: {} End: {} Count: {}", Thread.currentThread().getName(), start, end, count);
+			return parcialSwarn;
 		};
 	}
 
 	private Callable<String> updateParticles(int start, int end) {
 		return () -> {
+			int count = 0;
 			for (int i = start; i <= end; i++) {
 				PSOSolution particle = particules.get(i);
 				double[] iVelocity = fitnessFunc.updateVelocity(particle.getPosition(), particle.getVelocity(),
@@ -126,8 +133,10 @@ public class PSOMultithread {
 				setBestGlobalPosition(particle, i);
 				if (logger.isDebugEnabled())
 					logger.debug("Particle updated[{}]: {}", i, particle);
+				count++;
 			}
-			return Thread.currentThread().getName() + " Start : " + start + " End: " + end;
+			logger.debug("{} Start: {} End: {} Count: {}", Thread.currentThread().getName(), start, end, count);
+			return Thread.currentThread().getName() + " Start: " + start + " End: " + end + " Count: " + count;
 		};
 	}
 
@@ -146,7 +155,7 @@ public class PSOMultithread {
 	private void shutdownThreadPool() {
 		threadPool.shutdown();
 		try {
-			if (!threadPool.awaitTermination(5, TimeUnit.SECONDS)) {
+			if (!threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
 				logger.debug("Threads were shutting down...");
 				threadPool.shutdownNow();
 			}
@@ -155,7 +164,7 @@ public class PSOMultithread {
 		}
 	}
 
-	private List<Future<String>> invokeThreads(List<Callable<String>> callables) {
+	private <T> List<Future<T>> invokeThreads(List<Callable<T>> callables) {
 		try {
 			return threadPool.invokeAll(callables);
 		} catch (InterruptedException e) {
@@ -163,13 +172,11 @@ public class PSOMultithread {
 		}
 	}
 
-	private void printThreadResults(List<Future<String>> futures) {
-		for (Future<String> future : futures) {
-			try {
-				logger.debug(future.get());
-			} catch (InterruptedException | ExecutionException e) {
-				throw new AlgorithmExecutionException("Error getting thread results", e);
-			}
+	private <T> List<T> getThreadResults(Future<List<T>> future) {
+		try {
+			return future.get();
+		} catch (InterruptedException | ExecutionException e) {
+			throw new AlgorithmExecutionException("Error getting thread results", e);
 		}
 	}
 
