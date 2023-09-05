@@ -78,6 +78,7 @@ public class LogWriter {
 
 	public static void printGeneralParameters(final AlgorithmsParameters params) {
 		logger.info("GENERAL PARAMETERS CONFIGURATION");
+		logger.info("PENALTY: {}", params.getCapacityPenalty());
 		logger.info("FLEET CAPACITY: {}", params.getFleetCapacity());
 		logger.info("NUM. OF FLEETS: {}", params.getNumFleet());
 	}

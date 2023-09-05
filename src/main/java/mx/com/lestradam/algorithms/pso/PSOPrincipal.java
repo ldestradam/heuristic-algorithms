@@ -57,11 +57,10 @@ public class PSOPrincipal {
 	}
 	
 	private SolutionSet generateSolutionSet(final List<PSOSolution> particules) {
-		logger.info("GENERATING SOLUTION SET FOR {} PARTICULES.", particules.size());
-		int numParticules = params.getNumParticles();
+		logger.info("GENERATING SOLUTION SET FOR {} PARTICULES + GLOBAL BEST PARTICLE.", particules.size());
 		long totalFitness = 0;
-		SolutionSet solutionSet = new SolutionSet(numParticules);
-		for (int i = 0; i < numParticules; i++) {
+		SolutionSet solutionSet = new SolutionSet(particules.size());
+		for (int i = 0; i < particules.size(); i++) {
 			totalFitness += particules.get(i).getFitness();
 			long excess = fitnessFunc.excess(particules.get(i).getSolution());
 			Solution solution = new Solution(particules.get(i).getSolution(), particules.get(i).getFitness(), excess);

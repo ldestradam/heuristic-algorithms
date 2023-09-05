@@ -3,6 +3,8 @@ package mx.com.lestradam.algorithms.functions.builders;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,8 @@ import mx.com.lestradam.algorithms.utils.CsvWriter;
 
 @Component
 public class FileResultsBuilder {
+	
+	private static final Logger logger = LoggerFactory.getLogger(FileResultsBuilder.class);
 	
 	@Autowired
 	private DataSet dataSet;
@@ -37,7 +41,9 @@ public class FileResultsBuilder {
 			distance = RoutesOperations.getDistanceNodes(source, target, dataSet.getEdges());
 			String[] lastRow = { String.valueOf(source), String.valueOf(target), String.valueOf(distance), "Directed" };
 			rows.add(lastRow);
-			CsvWriter.createEdgeFile(path + "solution" + i + ".csv", rows);
+			String filename = path + "solution" + i + ".csv";
+			logger.info("Creating edge file for solution[{}] in {} ", i, filename);
+			CsvWriter.createEdgeFile(filename, rows);
 			rows = new ArrayList<>();
 		}
 	}

@@ -60,6 +60,7 @@ public class PSOMultithread {
 			iteration++;
 			LogWriter.printCurrentIterationPso(particules, gBestPosition, iteration);
 		}
+		particules.add(gBestPosition); // Adding best global particle to solution set
 		shutdownThreadPool();
 		return particules;
 	}
