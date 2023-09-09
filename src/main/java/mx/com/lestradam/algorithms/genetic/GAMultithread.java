@@ -1,6 +1,5 @@
 package mx.com.lestradam.algorithms.genetic;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -9,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +31,10 @@ import mx.com.lestradam.algorithms.utils.LogWriter;
 public class GAMultithread {
 
 	private static Logger logger = LoggerFactory.getLogger(GAMultithread.class);
-	private ExecutorService threadPool;
-	private SolutionSet population;
-	private List<Solution> tempPopulation;
+
 	private int numThreads;
+	private SolutionSet population;
+	private ExecutorService threadPool;
 
 	@Autowired
 	private GeneticParameters params;
@@ -53,30 +53,22 @@ public class GAMultithread {
 
 	public SolutionSet execute(int numThreads) {
 		this.numThreads = numThreads;
+		this.threadPool = Executors.newFixedThreadPool(this.numThreads);
 		// Initialize population
 		initial();
 		int generation = 0;
-		threadPool = Executors.newFixedThreadPool(this.numThreads);
 		LogWriter.printCurrentIteration(population, generation);
 		while (generation < params.getNumGenerations()) {
 			// Create temporary population
-			createTemporalPopulation();
+			Solution[] tmp = createTemporalPopulation();
 			// Replace individuals based on fitness
-			evaluate(tempPopulation);
+			evaluate(tmp);
 			// Increase generation counter
 			generation++;
 			// Print current generation
 			LogWriter.printCurrentIteration(population, generation);
 		}
-		threadPool.shutdown();
-		try {
-			if (!threadPool.awaitTermination(5, TimeUnit.SECONDS)) {
-				logger.trace("Threads were shutting down...");
-				threadPool.shutdownNow();
-			}
-		} catch (InterruptedException e) {
-			throw new AlgorithmExecutionException("Error on shutting down threads", e);
-		}
+		shutdownThreadPool();
 		return population;
 	}
 
@@ -96,45 +88,43 @@ public class GAMultithread {
 		population = new SolutionSet(actualSolutions, totalFitness);
 	}
 
-	private void createTemporalPopulation() {
+	private Solution[] createTemporalPopulation() {
 		logger.debug("Creating temporal population...");
-		tempPopulation = new ArrayList<>();
-		List<Callable<String>> callables = new ArrayList<>();
-		for (int i = 0; i < this.numThreads; i++) {
-			callables.add(createIndividuals());
+		int start = 0;
+		int size = params.getPopulationSize() - params.getElitism();
+		Solution[] temp = new Solution[size]; 
+		List<int[]> splits = BasicOperations.splitRange(size, this.numThreads);
+		List<Callable<Solution[]>> callables = splits.stream().map(split -> createIndividuals(split[0], split[1]))
+				.collect(Collectors.toList());
+		List<Future<Solution[]>> futures = invokeThreads(callables);
+		for(Future<Solution[]> future : futures) {
+			Solution[] solutions = getThreadResults(future);
+			for(int i = 0; i < solutions.length; i++)
+				temp[i + start] = solutions[i]; 
+			start += solutions.length;
 		}
-		List<Future<String>> futures;
-		try {
-			futures = threadPool.invokeAll(callables);
-			if (logger.isTraceEnabled()) {
-				for (Future<String> future : futures) {
-					logger.trace(future.get());
-				}
-			}
-		} catch (InterruptedException e) {
-			throw new AlgorithmExecutionException("Error getting thread results", e);
-		} catch (ExecutionException e) {
-			throw new AlgorithmExecutionException("Error creating new individuals", e);
-		}
+		return temp;
 	}
 
-	private Callable<String> createIndividuals() {
+	private Callable<Solution[]> createIndividuals(int start, int end) {
 		return () -> {
-			int counter = 0;
-			// Loop over current population
-			while (isTempPopulationDone()) {
-				// Select individuals based on fitness
-				Solution[] parents = select();
-				// Apply genetic operators
-				Solution[] offsprings = recombine(parents[0], parents[1]);
-				counter += addIndividuals(offsprings);
+			int i = 0;
+			int size = end - start + 1;
+			Solution[] individuals = new Solution[size];
+			while (i < size) {
+				Solution[] parents = selection();
+				Solution[] offsprings = crossover(parents[0], parents[1]);
+				individuals[i] = offsprings[0];
+				if (i < size - 1)
+					individuals[i + 1] = offsprings[1];
+				i = i + 2;
 			}
-			return Thread.currentThread().getName() + " - " + counter + " offsprings added";
+			return individuals;
 		};
 	}
 
-	private Solution[] select() {
-		// Select parents
+	private Solution[] selection() {
+		// Select individuals based on fitness
 		logger.debug("Parent selection");
 		Solution parent1 = SelectionOperators.inverseRouletteSelection(population.getSolutions());
 		Solution parent2 = SelectionOperators.inverseRouletteSelection(population.getSolutions());
@@ -145,7 +135,7 @@ public class GAMultithread {
 		return new Solution[] { parent1, parent2 };
 	}
 
-	private Solution[] recombine(Solution parent1, Solution parent2) {
+	private Solution[] crossover(Solution parent1, Solution parent2) {
 		// Apply crossover
 		if (params.getCrossoverRate() > Math.random()) {
 			// Initialize offspring
@@ -183,7 +173,7 @@ public class GAMultithread {
 		}
 	}
 
-	private void evaluate(List<Solution> tempPopulation) {
+	private void evaluate(Solution[] tempPopulation) {
 		// Elitism: Keep the top N best-performing individuals from the current
 		// generation
 		logger.debug("Elitism: {}", params.getElitism());
@@ -197,8 +187,8 @@ public class GAMultithread {
 			}
 		}
 		// Fill the rest of the new population with the remaining offspring
-		for (int i = 0; i < tempPopulation.size(); i++) {
-			newPopulation[params.getElitism() + i] = tempPopulation.get(i);
+		for (int i = 0; i < tempPopulation.length; i++) {
+			newPopulation[params.getElitism() + i] = tempPopulation[i];
 		}
 		// Set fitness population
 		long populationFitness = fitnessFunc.evaluateSolutionSet(newPopulation);
@@ -208,31 +198,32 @@ public class GAMultithread {
 		population.setFitness(populationFitness);
 	}
 
-	private synchronized boolean isTempPopulationDone() {
-		boolean isDone = tempPopulation.size() < (params.getPopulationSize() - params.getElitism());
-		logger.trace("Temporal population is done: {}", isDone);
-		return isDone;
+	private void shutdownThreadPool() {
+		threadPool.shutdown();
+		try {
+			if (!threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
+				logger.debug("Threads were shutting down...");
+				threadPool.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			throw new AlgorithmExecutionException("Error on shutting down threads", e);
+		}
 	}
 
-	private synchronized int addIndividuals(Solution[] offsprings) {
-		int counter = 0;
-		if (logger.isTraceEnabled())
-			logger.trace("Attempting to add 1st offspring: {}", offsprings[0]);
-		if (tempPopulation.size() != (params.getPopulationSize() - params.getElitism())) {
-			if (logger.isTraceEnabled())
-				logger.trace("1st offspring added: {}", offsprings[0]);
-			tempPopulation.add(offsprings[0]);
-			counter++;
+	private <T> List<Future<T>> invokeThreads(List<Callable<T>> callables) {
+		try {
+			return threadPool.invokeAll(callables);
+		} catch (InterruptedException e) {
+			throw new AlgorithmExecutionException("Error sending employed bees", e);
 		}
-		if (logger.isTraceEnabled())
-			logger.trace("Attempting to add 2nd offspring: {}", offsprings[1]);
-		if (tempPopulation.size() != (params.getPopulationSize() - params.getElitism())) {
-			if (logger.isTraceEnabled())
-				logger.trace("2nd offspring added: {}", offsprings[1]);
-			tempPopulation.add(offsprings[1]);
-			counter++;
+	}
+
+	private <T> T[] getThreadResults(Future<T[]> future) {
+		try {
+			return future.get();
+		} catch (InterruptedException | ExecutionException e) {
+			throw new AlgorithmExecutionException("Error getting thread results", e);
 		}
-		return counter;
 	}
 
 }
