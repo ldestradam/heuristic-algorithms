@@ -83,7 +83,7 @@ public class ABCMultithread {
 	}
 
 	private void sendEmployedBees() {
-		logger.trace("EMPLOYED BEE PHASE");
+		logger.debug("EMPLOYED BEE PHASE");
 		List<int[]> splits = BasicOperations.splitRange(this.foodSourceSize, this.numThreads);
 		List<Callable<String>> callables = new ArrayList<>();
 		for (int[] split : splits) {
@@ -114,10 +114,10 @@ public class ABCMultithread {
 				} else {
 					foodSourceLimits[i] = foodSourceLimits[i] + 1;
 				}
-				if (logger.isTraceEnabled()) {
-					logger.trace("Food source [{}] limit count: {}", i, foodSourceLimits[i]);
-					logger.trace("Food source {} Fitness: {}", foodSource.getRepresentation(), foodSourceFitness);
-					logger.trace("Neighbor    {} Fitness: {}", neighbor, neighborFitness);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Food source [{}] limit count: {}", i, foodSourceLimits[i]);
+					logger.debug("Food source {} Fitness: {}", foodSource.getRepresentation(), foodSourceFitness);
+					logger.debug("Neighbor    {} Fitness: {}", neighbor, neighborFitness);
 				}
 			}
 			return Thread.currentThread().getName() + " Start : " + start + " End: " + end;
@@ -125,7 +125,7 @@ public class ABCMultithread {
 	}
 
 	public void sendOnlooker() {
-		logger.trace("ONLOOKER BEE PHASE");
+		logger.debug("ONLOOKER BEE PHASE");
 		List<int[]> splits = BasicOperations.splitRange(this.foodSourceSize, this.numThreads);
 		// For each onlooker
 		for (int i = 0; i < params.getOnlookersBees(); i++) {
@@ -146,7 +146,7 @@ public class ABCMultithread {
 		return () -> {
 			for (int j = start; j <= end; j++) {
 				double rand = Math.random();
-				logger.trace("Rand: {} Prob[{}]: {}", rand, j, probabilities[j]);
+				logger.debug("Rand: {} Prob[{}]: {}", rand, j, probabilities[j]);
 				if (rand < probabilities[j]) {
 					// Send the onlook bee to the food source of the ith employed bee.
 					Solution foodSource = foodSources.getSolution(j);
@@ -164,10 +164,10 @@ public class ABCMultithread {
 					} else {
 						foodSourceLimits[j] = foodSourceLimits[j] + 1;
 					}
-					if (logger.isTraceEnabled()) {
-						logger.trace("Food source [{}] limit count: {}", j, foodSourceLimits[j]);
-						logger.trace("Food source {} Fitness: {}", foodSource.getRepresentation(), foodSourceFitness);
-						logger.trace("Neighbor    {} Fitness: {}", neighbor, neighborFitness);
+					if (logger.isDebugEnabled()) {
+						logger.debug("Food source [{}] limit count: {}", j, foodSourceLimits[j]);
+						logger.debug("Food source {} Fitness: {}", foodSource.getRepresentation(), foodSourceFitness);
+						logger.debug("Neighbor    {} Fitness: {}", neighbor, neighborFitness);
 					}
 				}
 			}
@@ -176,7 +176,7 @@ public class ABCMultithread {
 	}
 
 	public void sendScoutBees() {
-		logger.trace("SCOUT BEE PHASE");
+		logger.debug("SCOUT BEE PHASE");
 		List<int[]> splits = BasicOperations.splitRange(this.foodSourceSize, this.numThreads);
 		List<Callable<String>> callables = new ArrayList<>();
 		for (int[] split : splits) {
@@ -192,6 +192,7 @@ public class ABCMultithread {
 			// If any employed bee becomes scout bee
 			for (int i = start; i < end; i++) {
 				// Send the scout bee to a randomly produced food source
+				logger.debug("Food source [{}] limit count: {}", i, foodSourceLimits[i]);
 				if (foodSourceLimits[i] >= params.getImprovedLimit()) {
 					long[] solution = solutionBuilder.createSolution();
 					double fitness = fitnessFunctions.evaluateSolution(solution);
@@ -199,7 +200,7 @@ public class ABCMultithread {
 					Solution newFoodSource = new Solution(solution, fitness, excess);
 					foodSources.setSolution(i, newFoodSource);
 					foodSourceLimits[i] = 0;
-					logger.trace("Food source [{}] limit count reset", i);
+					logger.debug("Food source [{}] limit count reset", i);
 				}
 			}
 			return Thread.currentThread().getName() + " Start : " + start + " End: " + end;
