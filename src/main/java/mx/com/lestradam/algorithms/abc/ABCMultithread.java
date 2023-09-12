@@ -190,7 +190,7 @@ public class ABCMultithread {
 	public Callable<String> sendScoutBees(int start, int end) {
 		return () -> {
 			// If any employed bee becomes scout bee
-			for (int i = start; i < end; i++) {
+			for (int i = start; i <= end; i++) {
 				// Send the scout bee to a randomly produced food source
 				logger.debug("Food source [{}] limit count: {}", i, foodSourceLimits[i]);
 				if (foodSourceLimits[i] >= params.getImprovedLimit()) {
