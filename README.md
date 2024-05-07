@@ -22,8 +22,9 @@ The optional parameters correspond to the file directory of input or output node
 General parameters
 
 	file-path			#Output file directory.
+	threads				#Number of execution threads, if not specified, the algorithms will be executed in a single thread
 	--input-file.nodes		#Nodes input file.
-	--input-file.edges  	#Edges input file.
+	--input-file.edges		#Edges input file.
 
 Algorithm parameters
 
